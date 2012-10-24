@@ -20,6 +20,9 @@
         <%= stylesheet_link_tag "bootstrap-responsive.min", "main" %>
 
         <%= javascript_include_tag "modernizr" %>
+        <%= javascript_include_tag "application" %>
+        <%= javascript_include_tag :all %>
+        <%= csrf_meta_tag %>
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -57,17 +60,32 @@
                             </li>
                             -->
                         </ul>
-                        <form class="navbar-form pull-right">
-                            <input class="span2" type="text" placeholder="Email">
+                        <div class="navbar-form pull-right">
+                            <% if signed_in? %>
+                                <li><%= button_to "Déconnexion", signout_path, :method => :delete, :class => "btn" %></li>
+                            <% else %>
+                                <%= form_for(:session, :url => sessions_path) do |f| %>
+                                    <%= f.text_field :email, :class => "span2", :placeholder => "Email" %>
+                                    <%= f.text_field :password, :class => "span2", :placeholder => "Mot de passe" %>
+                                    <%= f.submit "Connexion", :class => "btn" %>
+                                <% end %>
+                            <% end %>
+                        </div>
+                        <!--
+                        <input class="span2" type="text" placeholder="Email">
                             <input class="span2" type="password" placeholder="Password">
                             <button type="submit" class="btn">Sign in</button>
                         </form>
+                        -->
                     </div><!--/.nav-collapse -->
                 </div>
             </div>
         </div>
 
         <div class="container">
+            <% flash.each do |key, value| %>
+                <div class="alert error"><%= value %></div>
+            <% end %>
 
             <div id="content">
                 <%= yield %>
@@ -86,6 +104,7 @@
 
         <%= javascript_include_tag "bootstrap.min" %>
         <%= javascript_include_tag "main" %>
+        <%= csrf_meta_tag %>
         <script>
             var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
             (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
