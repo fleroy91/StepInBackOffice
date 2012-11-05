@@ -11,13 +11,12 @@
                 <ul class="nav nav-tabs">
 
                     <% if signed_in? then %>
-                        <li><%= link_to "Synthèse", root_path %></li>
-                        <li><%= link_to "Statistiques", stats_path %></li>
-                        <li><%= link_to "Temps réel", real_time_path %></li>
+                        <%= active_link_to :home, "Synthèse" %>
+                        <%= active_link_to :stats, "Statistiques" %>
+                        <%= active_link_to :real_time, "Temps réel" %>
                         <% if (current_user.is_admin?) then %>
-                            <li><%= link_to "Administration", admin_path %></li>
+                            <%= active_link_to :admin, "Administration" %>
                         <% end %>
-                        <li><%= link_to "Temps réel", help_path %></li>
                     <% end %>
                 </ul>
                 <div class="navbar-form pull-right">

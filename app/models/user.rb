@@ -5,7 +5,7 @@ class User < MyActiveResource
 
 	def initialize(*args)
 	  super
-	  puts "Creation d'un user : " + args[0].inspect
+	  # puts "Creation d'un user : " + args[0].inspect
 	end
 
 	def has_password?(submitted_password)
@@ -20,6 +20,13 @@ class User < MyActiveResource
 
   	def self.authenticate_with_id(id)
 	    id ? user = find(id) : nil
+	end
+
+	def get_shops
+		# @shops = Shop.find(:all, :params => { "beancode!gt" => 0, "app_user.url" => m_url}) if @shops.nil?
+		# TODO : for debug we get all shops
+		@shops = Shop.find(:all, :params => { "beancode!gt" => 0}) if @shops.nil?
+		return @shops
 	end
 
 end

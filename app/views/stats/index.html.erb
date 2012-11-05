@@ -1,0 +1,12 @@
+<script type="text/javascript">
+	$(function () {
+	    var chart;
+	    $(document).ready(function() {
+	    	chart = new Highcharts.Chart(gon.chart);
+	    });
+	});
+</script>
+<%= javascript_include_tag "highcharts" %>
+<%= javascript_include_tag "modules/exporting" %>
+
+<div id="chart_container" style="min-width: 400px; height: 400px; margin: 0 auto"></div>

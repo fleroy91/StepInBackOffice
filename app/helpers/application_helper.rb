@@ -7,4 +7,9 @@ module ApplicationHelper
       		return "#{base_titre} | #{@titre}"
  	   	end
 	end
+
+
+	def active_link_to(controller, name)
+		content_tag(:li, link_to(name, url_for(:controller => controller)), :class => (current_page?(:controller => controller) ? "active" : "") )
+	end
 end

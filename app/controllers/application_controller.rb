@@ -1,7 +1,6 @@
 # encoding: utf-8
 class ApplicationController < ActionController::Base
 	protect_from_forgery
-	include PagesHelper
 	include SessionsHelper
 	include UsersHelper
 	include ShopsHelper
@@ -23,8 +22,7 @@ class ApplicationController < ActionController::Base
 					{ :title => "Par semaine", :action => :week_view },
 					{ :title => "Par mois", :action => :month_view }
 					]
-				]
-			}
+			]
 		}
 	}
 end

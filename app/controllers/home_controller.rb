@@ -3,7 +3,7 @@ class HomeController < ApplicationController
   def index
   	if signed_in? then
   		@titre = "Synthèse"
-  		render :action => synthesis
+  		render :action => :synthesis
   	else
   		@titre = "Accueil"
   	end
@@ -20,6 +20,7 @@ class HomeController < ApplicationController
 
   def stats
   	@titre = "Statistique"
+    redirect_to :controller => :stats, :action => :index 
   end
 
 end

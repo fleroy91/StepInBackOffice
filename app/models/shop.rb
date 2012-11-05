@@ -5,6 +5,6 @@ class Shop < MyActiveResource
 
 	def initialize(*args)
 	  super
-	  puts "Creation d'un shop : " + args[0].inspect
+	  # puts "Creation d'un shop : " + args[0].inspect
 	end
 end

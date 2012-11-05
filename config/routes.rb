@@ -1,4 +1,10 @@
 StepInBackOffice::Application.routes.draw do
+  get "admin/index"
+
+  get "real_time/index"
+
+  get "stats/index"
+
   match '/admin',     :to => 'home#admin'
   match '/stats',     :to => 'home#stats'
   match '/real_time', :to => 'home#real_time'
@@ -9,8 +15,9 @@ StepInBackOffice::Application.routes.draw do
   resources :users
   resources :sessions, :only => [:new, :create, :destroy]
 
-  match '/signin', :to => 'sessions#new' 
-  match '/signout', :to => 'sessions#destroy' 
+  match '/signnew', :to => 'sessions#new'
+  match '/signin', :to => 'sessions#create'
+  match '/signout', :to => 'sessions#destroy'
   
   root :to => 'home#index'
   # The priority is based upon order of creation:

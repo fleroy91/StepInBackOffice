@@ -1,17 +1,15 @@
 class SessionsController < ApplicationController
 	def new
-		redirect_to :create
 	end
 
 	def create
-		puts "Je suis dans Create de SessionsController"
 		user = User.authenticate(params[:session][:email],
 		                            params[:session][:password])
 		if user.nil?
 			puts "Erreur : pas de user"
 		    # Crée un message d'erreur et rend le formulaire d'identification.
 		    flash[:error] = "Combinaison Email/Mot de passe invalide."
-      		redirect_to root_path
+      		redirect_to signnew_path
 		else
 		    # Authentifie l'utilisateur et redirige vers la page d'affichage.
 		    sign_in user

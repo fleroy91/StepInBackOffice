@@ -1,0 +1,19 @@
+<div class="span2">
+    <ul class="nav nav-list">
+        <%= form_for(:stats, :method => :get, :action => :index) do |f| %>
+            <li class="nav-header">Dates</li>
+            <li>De</li>
+            <li><%= f.datepicker :from, :value => @from.to_s,  :defaultDate => "-1m", :numberOfMonths => 2, :showButtonPanel => true, :dateFormat => 'dd/mm/yy'  %>
+            </li>
+            <li>à</li>
+            <li><%= f.datepicker :to, :value => @to.to_s, :numberOfMonths => 2, :showButtonPanel => true, :dateFormat => 'dd/mm/yy'  %></li>
+            <li class="nav-header">Données</li>
+            <%= f.select :kind, [[ 'Nb visites', :visits ], [ 'Nb scans', :scans], ['Nb points', :points]], :value => @kind, :class => "span2" %>
+            <li class="nav-header">Echelle</li>
+            <%= f.select :xAxis, [[ 'Vue par heure', :hour ], [ 'Vue par jour', :day], ['Vue par jour semaine', :week], ['Vue par mois', :month]], :value => @xAxis, :class => "span2" %>
+            <li class="nav-header">Graphique</li>
+            <%= f.select :chart_type, [[ 'Barre', :column ], [ 'Courbes', :line]], :value => @chart_type, :class => "span2" %>
+            <%= f.submit "Appliquer", :class => "btn" %>
+        <% end %>
+    </ul>
+</div>
