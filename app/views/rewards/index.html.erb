@@ -1,0 +1,29 @@
+<h1>Rewards</h1> 
+
+<table class="table table-striped table-hover">
+  <tr>
+    <th width="15%">Qui</th>
+    <th width="15%">Action kind</th>
+    <th width="15%">Où</th>
+    <th>When</th>
+    <th>Nb points</th>
+    <th></th>
+  </tr>
+
+<% @rewards.each do |reward| %>
+  <tr>
+    <td><%= user_thumbnail(reward.user) %></td>
+    <td><%= ak_thumbnail(reward.action_kind, reward.code) %></td>
+    <td><%= shop_thumbnail(reward.shop) %></td>
+    <td><%= displayWhen(reward.when) %></td>
+    <td><%= reward.nb_points %></td>
+    <td>
+        <div class="btn-group">
+            <%= link_to content_tag(:i, "", :class=>"icon-trash") + " Supprimer", reward, :method => :delete, :confirm => 'Are you sure?' %>
+        </div>
+    </td>
+  </tr>
+<% end %>
+</table>
+
+<br />

@@ -1,0 +1,43 @@
+<%= form_for(@shop) do |f| %>
+  <%= render 'shared/error_messages', :object => f.object %>
+
+  <div class="field">
+    <%= f.label :ident %><br />
+    <%= f.text_field :ident %>
+  </div>
+  <div class="field">
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </div>
+  <div class="field">
+    <%= f.label :address %><br />
+    <%= f.text_field :address %>
+  </div>
+  <div class="field">
+    <%= f.label :zipcode %><br />
+    <%= f.text_field :zipcode %>
+  </div>
+  <div class="field">
+    <%= f.label :city %><br />
+    <%= f.text_field :city %>
+  </div>
+  <div class="field">
+    <%= f.label :tags %><br />
+    <%= f.text_field :tags %>
+  </div>
+  <div class="field">
+    <%= f.label :location %><br />
+    <%= f.text_field :location %>
+  </div>
+  <div class="field">
+    <%= f.label :beancode %><br />
+    <%= f.text_field :beancode %>
+  </div>
+  <div class="field">
+    <%= f.label :points %><br />
+    <%= f.text_field :points %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

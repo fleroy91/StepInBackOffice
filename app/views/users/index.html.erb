@@ -1,33 +1,49 @@
-<h1>Listing users</h1>
+<h1>Utilisateurs</h1>
 
-<table>
+<table class="table table-striped table-hover">
   <tr>
-    <th>Id</th>
+    <th></th>
     <th>Firstname</th>
     <th>Email</th>
     <th>Password</th>
     <th>Phone number</th>
     <th>Total points</th>
     <th></th>
-    <th></th>
-    <th></th>
   </tr>
 
 <% @users.each do |user| %>
   <tr>
-    <td><%= user.id %></td>
+    <td>
+    <% if user.photo0 && user.photo0.m_url then %>
+        <%= image_tag user.photo0.m_url, :class => "img-polaroid", :size => "80x80" %>
+    <% else %>
+        <img src="silouhette.jpeg" class="img-polaroid" width="80" height="80"/>
+    <% end %>
+    </td>
     <td><%= user.firstname %></td>
     <td><%= user.email %></td>
     <td><%= user.password %></td>
     <td><%= user.phone_number %></td>
-    <td><%= user.total_points %></td>
-    <td><%= button_to 'Show', user %></td>
-    <td><%= button_to 'Edit', edit_user_path(user) %></td>
-    <td><%= button_to 'Destroy', user, :method => :delete, :confirm => 'Are you sure?' %></td>
+    <td><%= link_to rewards_path do %>
+        <%= user.total_points %>
+        <% end %>
+    </td>
+    <td>
+        <div class="btn-group">
+            <%= link_to content_tag(:i, "", :class => "icon-user icon-white") + " Consulter", user, :class => "btn btn-primary" %>)
+            <a class="btn btn-primary dropdown-toggle" data-toggle="dropdown" href="#"><span class="caret"></span></a>
+            <ul class="dropdown-menu">
+                <li><%= link_to content_tag(:i, "", :class=>"icon-pencil") + " Editer", edit_user_path(user)%></li>
+                <li><%= link_to content_tag(:i, "", :class=>"icon-trash") + " Supprimer", user, :method => :delete, :confirm => 'Are you sure?' %></li>
+            </ul>
+        </div>
+    </td>
   </tr>
 <% end %>
 </table>
 
 <br />
 
+<!--
 <%= link_to 'New User', new_user_path %>
+-->

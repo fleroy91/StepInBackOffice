@@ -1,45 +1,48 @@
-<%= form_for(@user) do |f| %>
-  <% if @user.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+<%= form_for(@user, :html => {:class=>"form-horizontal"}) do |f| %>
+  <%= render 'shared/error_messages', :object => f.object %>
 
-      <ul>
-      <% @user.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
+  <div class="control-group">
+    <%= f.label :firstname, :class =>"control-label" %>
+    <div class="controls">
+      <%= f.text_field :firstname, :disabled => (params[:action] == "show") %>
     </div>
-  <% end %>
+  </div>
+  <div class="control-group">
+    <%= f.label :email, :class =>"control-label" %>
+    <div class="controls">
+      <%= f.text_field :email, :disabled => (params[:action] == "show") %>
+    </div>
+  </div>
 
-  <div class="field">
-    <%= f.label :id %><br />
-    <%= f.text_field :id %>
+  <div class="control-group">
+    <%= f.label :password, :class =>"control-label"  %>
+    <div class="controls">
+      <%= f.text_field :password, :disabled => (params[:action] == "show")  %>
+    </div>
   </div>
-  <div class="field">
-    <%= f.label :firstname %><br />
-    <%= f.text_field :firstname %>
+  <div class="control-group">
+    <%= f.label :fb_token, :class =>"control-label"  %>
+    <div class="controls">
+      <%= f.text_field :fb_token, :disabled => (params[:action] == "show")  %>
+    </div>
   </div>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.text_field :email %>
+  <div class="control-group">
+    <%= f.label :phone_number, :class =>"control-label"  %>
+    <div class="controls">
+      <%= f.text_field :phone_number, :disabled => (params[:action] == "show")  %>
+    </div>
   </div>
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.text_field :password %>
+  <div class="control-group">
+    <%= f.label :total_points, :class =>"control-label"  %>
+    <div class="controls">
+      <%= f.number_field :total_points, :disabled => (params[:action] == "show")  %>
+    </div>
   </div>
-  <div class="field">
-    <%= f.label :fb_token %><br />
-    <%= f.text_field :fb_token %>
-  </div>
-  <div class="field">
-    <%= f.label :phone_number %><br />
-    <%= f.text_field :phone_number %>
-  </div>
-  <div class="field">
-    <%= f.label :total_points %><br />
-    <%= f.number_field :total_points %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+  <% if params[:action] != "show" then %>
+    <div class="control-group">
+      <div class="controls">
+        <%= f.submit "Valider", :class=>"btn btn-danger" %>
+      </div>
+    </div>
+  <%end%>
 <% end %>

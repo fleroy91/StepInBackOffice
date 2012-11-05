@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Title:</b>
+  <%= @scan.title %>
+</p>
+
+<p>
+  <b>Desc:</b>
+  <%= @scan.desc %>
+</p>
+
+<p>
+  <b>Code:</b>
+  <%= @scan.code %>
+</p>
+
+<p>
+  <b>Points:</b>
+  <%= @scan.points %>
+</p>
+
+
+<%= link_to 'Edit', edit_scan_path(@scan) %> |
+<%= link_to 'Back', scans_path %>

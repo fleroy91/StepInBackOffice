@@ -1,0 +1,23 @@
+<%= form_for(@reward) do |f| %>
+  <%= render 'shared/error_messages', :object => f.object %>
+
+  <div class="field">
+    <%= f.label :when %><br />
+    <%= f.datetime_select :when %>
+  </div>
+  <div class="field">
+    <%= f.label :nb_points %><br />
+    <%= f.number_field :nb_points %>
+  </div>
+  <div class="field">
+    <%= f.label :action_kind %><br />
+    <%= f.text_field :action_kind %>
+  </div>
+  <div class="field">
+    <%= f.label :code %><br />
+    <%= f.number_field :code %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
