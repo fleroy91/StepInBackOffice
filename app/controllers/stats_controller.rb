@@ -185,16 +185,23 @@ private
 	end
 
 	def get_objects(filter)
-		# TODO : filter on user shops
-		filter[:per_page] = 1000
-		objs = []
-		current_user.get_shops().each { |shop|
-			filter['shop.url'] = shop.m_url
-			logger.debug "Current shop : #{shop.name.inspect} + #{@from.to_s}"
-			res = Reward.find(:all, :params => filter)
-			logger.debug "#{res.size} rewards found for this shop #{shop.name.inspect}"
-			objs.concat(res)
-		}
+		# logger.debug("session[:stats_objs] : #{session[:stats_objs] && session[:stats_objs].size} - #{session[:stats_from].to_s}/#{@from.to_s} - #{session[:stats_to].to_s}/#{@to.to_s}")
+		#if session[:stats_objs].nil? || session[:stats_from] != @from || session[:stats_to] != @to then
+			# TODO : filter on user shops
+			filter[:per_page] = 1000
+			objs = []
+			current_user.get_shops().each { |shop|
+				filter['shop.url'] = shop.m_url
+				logger.debug "Current shop : #{shop.name.inspect} + #{@from.to_s}"
+				res = Reward.find(:all, :params => filter)
+				logger.debug "#{res.size} rewards found for this shop #{shop.name.inspect}"
+				objs.concat(res)
+			}
+			#session[:stats_objs] = objs
+			#session[:stats_from] = @from
+			#session[:stats_to] = @to
+			#logger.debug("After session[:stats_objs] : #{session[:stats_objs] && session[:stats_objs].size} - #{session[:stats_from].to_s}/#{@from.to_s} - #{session[:stats_to].to_s}/#{@to.to_s}")
+		#end
 		return objs
 	end
 end

@@ -20,7 +20,9 @@
         <%= render 'layouts/header' %>
         <div class="container-fluid">
             <div class="row-fluid">
-                <%= render 'layouts/side' %>
+                <div class="span2">
+                    <%= render 'layouts/side' %>
+                </div>
                 <div class="span10">
                     <% flash.each do |key, value| %>
                         <div class="alert"><%= value %></div>
