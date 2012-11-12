@@ -37,6 +37,7 @@ gem 'jquery_datepicker'
 gem 'modernizr-rails'
 gem 'gon'
 gem 'thin'
+gem 'redis'
 
 # Stylesheet libs
 # gem 'blueprint-rails'

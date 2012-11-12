@@ -6,13 +6,14 @@
         </li>
         <li>à</li>
         <li><%= f.datepicker :to, :value => @to.to_s, :class => "span12", :numberOfMonths => 2, :showButtonPanel => true, :dateFormat => 'dd/mm/yy'  %></li>
-        <li class="nav-header">Données</li>
-        <%= f.select :kind, options_for_select([[ 'Nb visites', :visits ], [ 'Nb scans', :scans], ['Nb points', :points]], @kind), {}, :class => "span12" %>
-        <li class="nav-header">Echelle</li>
-        <%= f.select :xAxis, options_for_select([[ 'Vue par heure', :hour ], [ 'Vue par jour', :day], ['Vue par jour semaine', :week], ['Vue par mois', :month]], @xAxis), {}, :class => "span12" %>
-        <li class="nav-header">Graphique</li>
-        <%= f.select :chart_type, options_for_select([[ 'Barre', :column ], [ 'Courbes', :line]], @chart_type), {}, :class => "span12" %>
+        <%= f.submit "Appliquer", :class => "btn", :onclick => "waitCursor();this.form.submit();" %>
 
-        <%= f.submit "Appliquer", :class => "btn" %>
+        <li class="nav-header">Données</li>
+        <%= f.select :kind, options_for_select([[ 'Nb visites', :visits ], [ 'Nb scans', :scans], ['Nb points', :points]], @kind), {}, :onchange => "waitCursor();this.form.submit();", :class => "span12" %>
+        <li class="nav-header">Echelle</li>
+        <%= f.select :xAxis, options_for_select([[ 'Vue par heure', :hour ], [ 'Vue par jour', :day], ['Vue par jour semaine', :week], ['Vue par mois', :month]], @xAxis), {}, :onchange => "waitCursor();this.form.submit();", :class => "span12" %>
+        <li class="nav-header">Graphique</li>
+        <%= f.select :chart_type, options_for_select([[ 'Barre', :column ], [ 'Courbes', :line], [ 'Camembert', :pie ]], @chart_type), {}, :onchange => "waitCursor();this.form.submit();", :class => "span12" %>
+
     <% end %>
 </ul>

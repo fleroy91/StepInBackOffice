@@ -12,7 +12,25 @@
 
 <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css" />
 <%= javascript_include_tag "ui/jquery-ui-1.9.1.min" %>
+<%= javascript_include_tag "jquery.loader-min" %>
 <%= javascript_include_tag "modernizr" %>
 <%= javascript_include_tag "main" %>
 <%= javascript_include_tag "application" %>
 <%= include_gon %>
+<script>
+    function waitCursor() {
+        $('#container').css('cursor', 'wait');
+        $('body').css('cursor', 'wait');
+        $.loader({
+            className:"blue-with-image",
+            content:''
+        });
+    }
+    $(function () {
+        $(document).ready(function() {
+            // console.log("Ready");
+            $('#container').css('cursor', 'auto');
+            $('body').css('cursor', 'auto');
+        });
+    });
+</script>

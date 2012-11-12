@@ -16,6 +16,7 @@ module UsersHelper
 		ret = content_tag(:ul, "Inconnu")
 		if small_user then
 			if @allUsers.nil? then
+				logger.debug "*** Relecture de tous les users"
 				@allUsers = User.find(:all, :params => {:per_page => 1000})
 			end
 			url = small_user.url

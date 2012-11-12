@@ -12,13 +12,13 @@
         <%= render 'layouts/stylesheets' %>
         <%= csrf_meta_tag %>
     </head>
-    <body>
+    <body style="cursor:wait">
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
         <![endif]-->
         <!-- This code is taken from http://twitter.github.com/bootstrap/examples/hero.html -->
         <%= render 'layouts/header' %>
-        <div class="container-fluid">
+        <div id="container" style="cursor:wait" class="container-fluid">
             <div class="row-fluid">
                 <div class="span2">
                     <%= render 'layouts/side' %>

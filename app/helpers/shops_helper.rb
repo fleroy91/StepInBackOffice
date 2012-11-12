@@ -2,7 +2,7 @@ module ShopsHelper
 	@allShops = nil
 
 	def findShop(id)
-		puts "Find shop : " + id.inspect + " - " + @allShops.size.inspect
+		logger.debug "Find shop : " + id.inspect + " - " + @allShops.size.inspect
 		@allShops.each { |shop| 
 			return shop if shop.id == id
 		}
@@ -19,6 +19,7 @@ module ShopsHelper
 		if small_shop then
 			puts "Small shop = " + small_shop.inspect
 			if @allShops.nil? then
+				logger.debug "*** Relecture de tous les shops"
 				@allShops = Shop.find(:all, :params => {:per_page => 1000})
 			end
 			url = small_shop.url

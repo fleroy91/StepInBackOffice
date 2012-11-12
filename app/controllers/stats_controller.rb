@@ -60,6 +60,8 @@ class StatsController < ApplicationController
 				shadow: true
 			},
 			tooltip: {
+				pointFormat: '{series.name}: <b>{point.y}</b>',
+        percentageDecimals: 0
 				# formatter: function() {
 				#     return ''+
 				#         this.x +': '+ this.y +' mm';
@@ -69,7 +71,20 @@ class StatsController < ApplicationController
 				column: {
 					pointPadding: 0.2,
 					borderWidth: 0
-				}
+				},
+				pie: {
+					allowPointSelect: true,
+					cursor: 'pointer',
+					dataLabels: {
+						enabled: true,
+						color: '#000000',
+						connectorColor: '#000000'
+						# ,
+						# formatter: function() {
+						# 		return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
+						# 	}
+						}
+					}
 			},
 			series: [{
 				name: 'XXX',
@@ -131,6 +146,10 @@ private
 			@chart[:subtitle][:text] = "Moyenne par mois"
 		end
 
+		if @chart_type == :pie then
+			@chart[:subtitle][:text] = "Somme"
+		end
+
 		logger.debug "Chart subtitle : #{@chart[:subtitle][:text]}"
 
 		# We get back the objects limited to the shops
@@ -146,14 +165,30 @@ private
 
 	def generate_series(objs, key, incr)
 		@chart[:series] = []
-		current_user.get_shops().each { |shop|
-			generate_serie(shop, objs, key, incr)
-		}
+		if @chart_type == :pie then
+			# we need to create only 1 serie with all the shops
+			#@chart[:xAxis] = {}
+			#@chart[:yAxis] = {}
+			data = []
+			current_user.get_shops().each { |shop|
+				serie = generate_serie([:all], shop, objs, key, incr)
+				data.push [shop.name, serie[0]]
+			}
+			# we need to sort the data
+			data.sort_by! {|e| -e[1] }
+			serie = { :type => @chart_type, :name => @chart[:title][:text], :data => data}
+			@chart[:series].push(serie)
+		else
+			current_user.get_shops().each { |shop|
+				serie = generate_serie(@chart[:xAxis][:categories], shop, objs, key, incr)
+				@chart[:series].push({:name => shop.name, :data => serie })
+			}
+		end
 	end
 
-	def generate_serie(shop, objs, key, incr)
+	def generate_serie(categories, shop, objs, key, incr)
 		serie = []
-		@chart[:xAxis][:categories].each { |cat_val|
+		categories.each { |cat_val|
 			sum = 0
 			objs.each { |obj|
 				if obj.shop.url == shop.m_url then
@@ -169,7 +204,7 @@ private
 						val = w.month
 					end
 
-					if val == cat_val then
+					if val == cat_val || cat_val == :all then
 						if incr.kind_of? Fixnum then
 							sum += incr
 						else
@@ -181,27 +216,41 @@ private
 			serie.push(sum)
 		}
 		logger.debug "Serie pour #{shop.name} : #{serie.inspect}"
-		@chart[:series].push({:name => shop.name, :data => serie })
+		return serie
 	end
 
 	def get_objects(filter)
-		# logger.debug("session[:stats_objs] : #{session[:stats_objs] && session[:stats_objs].size} - #{session[:stats_from].to_s}/#{@from.to_s} - #{session[:stats_to].to_s}/#{@to.to_s}")
-		#if session[:stats_objs].nil? || session[:stats_from] != @from || session[:stats_to] != @to then
+		ret = nil
+		userId = current_user.id
+		s_from = @from.to_s(:db)[0..9]
+		s_to = @to.to_s(:db)[0..9]
+
+		r_from = $redis.get(userId + '_stats_from')
+		r_to = $redis.get(userId + '_stats_to')
+		r_objs = $redis.get(userId + '_stats_objs')
+
+		if r_objs.nil? || r_from != s_from || r_to != s_to then
 			# TODO : filter on user shops
 			filter[:per_page] = 1000
 			objs = []
 			current_user.get_shops().each { |shop|
 				filter['shop.url'] = shop.m_url
-				logger.debug "Current shop : #{shop.name.inspect} + #{@from.to_s}"
 				res = Reward.find(:all, :params => filter)
 				logger.debug "#{res.size} rewards found for this shop #{shop.name.inspect}"
 				objs.concat(res)
 			}
-			#session[:stats_objs] = objs
-			#session[:stats_from] = @from
-			#session[:stats_to] = @to
-			#logger.debug("After session[:stats_objs] : #{session[:stats_objs] && session[:stats_objs].size} - #{session[:stats_from].to_s}/#{@from.to_s} - #{session[:stats_to].to_s}/#{@to.to_s}")
-		#end
-		return objs
+			ret = objs
+			$redis.set(userId + '_stats_objs', objs.to_json(:no_entry => true))
+			$redis.set(userId + '_stats_from', s_from)
+			$redis.set(userId + '_stats_to', s_to)
+		else
+			arr = JSON.parse(r_objs)
+			ret = []
+			arr.each { |elem|
+				rew = Reward.new(elem["reward"])
+				ret.push(rew)
+			}
+		end
+		return ret
 	end
 end
