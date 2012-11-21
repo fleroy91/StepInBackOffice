@@ -64,4 +64,7 @@ StepInBackOffice::Application.configure do
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
+
+    ENV["REDISTOGO_URL"] = 'redis://redistogo:cad334667aead86a21eda1d7a247cecc@gar.redistogo.com:9463/' 
+
 end

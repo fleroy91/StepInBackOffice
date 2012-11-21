@@ -36,4 +36,6 @@ StepInBackOffice::Application.configure do
   config.assets.debug = false
 
   config.logger = Logger.new(STDOUT)
+
+  ENV["REDISTOGO_URL"] = 'redis://localhost:6379' 
 end
