@@ -1,4 +1,20 @@
-<div class="hero-unit">
-	<h1>Not implemented yet !</h1>
+<%= javascript_include_tag "user/real_time" %>
+
+<div>
+	<p id="now" style="display:none"></p>
+	<div class="span10">
+		<table class="table table-bordered table-striped">
+			<thead>
+				<tr>
+					<td class="span5"><strong>Activité</strong></td>
+					<td class="span3"><strong>Magasin</strong></td>
+					<td class="span2"><strong>Date</strong></td>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</div>
+	<div class="ajax-loader" style="height:200px;"></div>
 </div>
 

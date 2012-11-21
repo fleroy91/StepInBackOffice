@@ -2,6 +2,10 @@ module UsersHelper
 	@allUsers = nil
 
 	def findUser(id)
+		if @allUsers.nil? then
+			@allUsers = User.my_find(:all, :params => {:per_page => 1000})
+		end
+		#logger.debug "Find User : " + id.inspect + '-' + @allUsers.size.inspect
 		@allUsers.each { |user|
 			return user if user.id == id
 		}
@@ -15,10 +19,6 @@ module UsersHelper
 	def user_thumbnail(small_user)
 		ret = content_tag(:ul, "Inconnu")
 		if small_user then
-			if @allUsers.nil? then
-				logger.debug "*** Relecture de tous les users"
-				@allUsers = User.find(:all, :params => {:per_page => 1000})
-			end
 			url = small_user.url
 			user = findUser(MyActiveResource.getId(url))
 			if user then

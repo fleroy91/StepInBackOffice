@@ -2,8 +2,9 @@
 class StatsController < ApplicationController
 	before_filter :authenticate
 
-	def index
+	def initialize_params
 		# We should receive the values of the forms in params
+		@titre = "Statistiques"
 		@xAxis = :hour
 		@kind = :visits
 		@chart_type = :column
@@ -18,12 +19,21 @@ class StatsController < ApplicationController
 			@to = DateTime.parse(params[:stats][:to], 'dd/mm/yy') if params[:stats][:to]
 			@chart_type = params[:stats][:chart_type].to_sym if params[:stats][:chart_type]
 		end
+	end
 
+	def index
+		initialize_params
+	end
+
+	def compute
+		logger.debug "In compute"
+		initialize_params
+		logger.debug "Params = #{params.inspect}"
 		logger.debug "From = #{@from.to_s} To = #{@to.to_s}"
 		logger.debug "Kind = #{@kind.to_s}"
 		logger.debug "Scale = #{@xAxis.to_s}"
 
-	@chart = {
+		@chart = {
 			chart: {
 				renderTo: 'chart_container',
 				type: @chart_type
@@ -91,13 +101,18 @@ class StatsController < ApplicationController
 				data: [0, 1, 2]
 			}]
 		}
-	@data = get_data()
+		@data = get_data()
 
-	logger.debug "Chart = #{@chart.inspect}"
+		logger.debug "Chart = #{@chart.to_json}"
 
-	# For JS parameters passing
-	gon.chart = @chart
+		# For JS parameters passing
+		gon.chart = @chart
 
+		respond_to do |format|
+			format.json { render :json => @chart }
+			format.js
+			format.html
+		end
 	end
 
 private
@@ -135,15 +150,19 @@ private
 		when :hour
 			@chart[:xAxis][:categories] = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23]
 			@chart[:subtitle][:text] = "Moyenne par heure"
+			@chart[:xAxis][:title] = { :text => "Heures"}
 		when :day
 			@chart[:xAxis][:categories] = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31]
 			@chart[:subtitle][:text] = "Moyenne par jour"
+			@chart[:xAxis][:title] = { :text => "Jour"}
 		when :week
 			@chart[:xAxis][:categories] = [:lundi,:mardi,:mercredi,:jeudi,:vendredi,:samedi,:dimanche]
 			@chart[:subtitle][:text] = "Moyenne par jour de la semaine"
+			@chart[:xAxis][:title] = { :text => "Jour"}
 		when :month
 			@chart[:xAxis][:categories] = [:Janvier,:Fevrier,:Mars,:Avril,:Mai,:Juin,:Juillet,:Août,:Septembre,:Octobre,:Novembre,:Décembre]
 			@chart[:subtitle][:text] = "Moyenne par mois"
+			@chart[:xAxis][:title] = { :text => "Mois"}
 		end
 
 		if @chart_type == :pie then
@@ -153,14 +172,10 @@ private
 		logger.debug "Chart subtitle : #{@chart[:subtitle][:text]}"
 
 		# We get back the objects limited to the shops
-		objs = get_objects(filter)
+		objs = get_rewards(:stats, @from, @to, filter)
 
 		generate_series(objs, @xAxis, incr)
 
-	end
-
-	def authenticate
-		deny_access unless signed_in?
 	end
 
 	def generate_series(objs, key, incr)
@@ -191,7 +206,8 @@ private
 		categories.each { |cat_val|
 			sum = 0
 			objs.each { |obj|
-				if obj.shop.url == shop.m_url then
+				# logger.debug "obj.shop.url = #{obj.shop.inspect}"
+				if obj.shop.attributes[:url] == shop.m_url then #obj.shop.attributes['url'] == shop.m_url || obj.shop.attributes['m_url'] == shop.m_url then
 					w = DateTime.parse(obj.when)
 					case key
 					when :hour
@@ -217,40 +233,5 @@ private
 		}
 		logger.debug "Serie pour #{shop.name} : #{serie.inspect}"
 		return serie
-	end
-
-	def get_objects(filter)
-		ret = nil
-		userId = current_user.id
-		s_from = @from.to_s(:db)[0..9]
-		s_to = @to.to_s(:db)[0..9]
-
-		r_from = $redis.get(userId + '_stats_from')
-		r_to = $redis.get(userId + '_stats_to')
-		r_objs = $redis.get(userId + '_stats_objs')
-
-		if r_objs.nil? || r_from != s_from || r_to != s_to then
-			# TODO : filter on user shops
-			filter[:per_page] = 1000
-			objs = []
-			current_user.get_shops().each { |shop|
-				filter['shop.url'] = shop.m_url
-				res = Reward.find(:all, :params => filter)
-				logger.debug "#{res.size} rewards found for this shop #{shop.name.inspect}"
-				objs.concat(res)
-			}
-			ret = objs
-			$redis.set(userId + '_stats_objs', objs.to_json(:no_entry => true))
-			$redis.set(userId + '_stats_from', s_from)
-			$redis.set(userId + '_stats_to', s_to)
-		else
-			arr = JSON.parse(r_objs)
-			ret = []
-			arr.each { |elem|
-				rew = Reward.new(elem["reward"])
-				ret.push(rew)
-			}
-		end
-		return ret
 	end
 end

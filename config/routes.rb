@@ -1,9 +1,16 @@
 StepInBackOffice::Application.routes.draw do
   get "admin/index"
+  get "admin/populate_users"
+  get "admin/populate_visits_scans"
 
   get "real_time/index"
+  get "real_time/update"
 
   get "stats/index"
+  get "stats/compute"
+
+  get "home/compute"
+  get "home/synthesis"
 
   match '/admin',     :to => 'home#admin'
   match '/stats',     :to => 'home#stats'

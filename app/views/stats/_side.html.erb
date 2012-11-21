@@ -1,19 +1,18 @@
 <ul class="nav nav-list">
-    <%= form_for(:stats, :method => :get, :action => :index) do |f| %>
+    <%= form_for(:stats, :url => { :action => :compute }, :method => :get, :remote => true) do |f| %>
         <li class="nav-header">Dates</li>
         <li>De</li>
         <li><%= f.datepicker :from, :value => @from.to_s, :class => "span12", :defaultDate => "-1m", :numberOfMonths => 2, :showButtonPanel => true, :dateFormat => 'dd/mm/yy'  %>
         </li>
         <li>à</li>
         <li><%= f.datepicker :to, :value => @to.to_s, :class => "span12", :numberOfMonths => 2, :showButtonPanel => true, :dateFormat => 'dd/mm/yy'  %></li>
-        <%= f.submit "Appliquer", :class => "btn", :onclick => "waitCursor();this.form.submit();" %>
+        <%= f.submit "Appliquer", :id => "apply-date", :class => "btn" %>
 
         <li class="nav-header">Données</li>
-        <%= f.select :kind, options_for_select([[ 'Nb visites', :visits ], [ 'Nb scans', :scans], ['Nb points', :points]], @kind), {}, :onchange => "waitCursor();this.form.submit();", :class => "span12" %>
+        <%= f.select :kind, options_for_select([[ 'Nb visites', :visits ], [ 'Nb scans', :scans], ['Nb points', :points]], @kind), {:remote => true}, "data-remote" => true, :onchange => "showWaitingAndSubmit($(form));", :class => "span12" %>
         <li class="nav-header">Echelle</li>
-        <%= f.select :xAxis, options_for_select([[ 'Vue par heure', :hour ], [ 'Vue par jour', :day], ['Vue par jour semaine', :week], ['Vue par mois', :month]], @xAxis), {}, :onchange => "waitCursor();this.form.submit();", :class => "span12" %>
+        <%= f.select :xAxis, options_for_select([[ 'Vue par heure', :hour ], [ 'Vue par jour', :day], ['Vue par jour semaine', :week], ['Vue par mois', :month]], @xAxis), {}, :onchange => "showWaitingAndSubmit($(form));", :class => "span12" %>
         <li class="nav-header">Graphique</li>
-        <%= f.select :chart_type, options_for_select([[ 'Barre', :column ], [ 'Courbes', :line], [ 'Camembert', :pie ]], @chart_type), {}, :onchange => "waitCursor();this.form.submit();", :class => "span12" %>
-
+        <%= f.select :chart_type, options_for_select([[ 'Barre', :column ], [ 'Courbes', :line], [ 'Camembert', :pie ]], @chart_type), {}, :onchange => "showWaitingAndSubmit($(form));", :class => "span12" %>
     <% end %>
 </ul>

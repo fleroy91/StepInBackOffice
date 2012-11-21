@@ -1,0 +1,5 @@
+var j = $.parseJSON('<%= raw @chart.to_json %>')
+console.log("Chart " + j);
+hideWaiting();
+var chart = new Highcharts.Chart(j);
+

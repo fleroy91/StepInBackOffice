@@ -2,7 +2,7 @@ module RewardsHelper
 	@allScans = nil
 
 	def findScan(code)
-		logger.debug "*** Relecture de tous les scans"
+		# logger.debug "*** Relecture de tous les scans"
 		@allScans = Scan.find(:all, :params => { :per_page => 1000}) if @allScans.nil?
 
 		@allScans.each { |scan|

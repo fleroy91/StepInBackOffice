@@ -1,16 +1,12 @@
 <ul class="nav nav-list">
-    <li class="nav-header">Les données</li>
-    <%= content_tag(:li, link_to(users_path) { "Utilisateurs" },
-        :class => (current_page?(:controller => "users") ? "active" : "")) %>
-    <%= content_tag(:li, link_to(rewards_path) { "Rewards" },
-        :class => (current_page?(:controller => "rewards") ? "active" : "")) %>
-    <%= content_tag(:li, link_to(shops_path) { "Boutiques" },
-        :class => (current_page?(:controller => "shops") ? "active" : "")) %>
-    <%= content_tag(:li, link_to(scans_path) { "Scans" },
-        :class => (current_page?(:controller => "scans") ? "active" : "")) %>
-    <li class="nav-header"></li>
-    <li><a href="#">Compte</a></li>
-    <li><a href="#">Paramètres</a></li>
+    <%= form_for(:admin, :url => { :action => :index }, :method => :get, :remote => true) do |f| %>
+        <li class="nav-header">Données</li>
+            <%= f.select :data_kind, options_for_select([[ "Utilisateurs", :users ], [ 'Boutiques', :shops ], 
+            [ 'Scans', :scans ], [ 'Rewards', :rewards]], @data_kind), {}, 
+            :onchange => "changeAndSubmit($(form));", :class => "span12" %>
+    <% end %>
+    <li class="nav-header">Opérations BD</li>
+    <li><%= button_to "Générer des utilisateurs", admin_populate_users_path, :confirm => "Etes-vous sur ? ", :method => :get, :class => "btn" %></li>
+    <li><%= button_to "Générer des visites / scans", admin_populate_visits_scans_path, :confirm => "Etes-vous sur ? ", :method => :get, :class => "btn" %></li>
     <li class="divider"></li>
-    <li><a href="#">Aide</a></li>
 </ul>

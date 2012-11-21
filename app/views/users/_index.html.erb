@@ -17,7 +17,7 @@
     <% if user.photo0 && user.photo0.m_url then %>
         <%= image_tag user.photo0.m_url, :class => "img-polaroid", :size => "80x80" %>
     <% else %>
-        <img src="silouhette.jpeg" class="img-polaroid" width="80" height="80"/>
+        <%= image_tag "silouhette.jpeg", :class=>"img-polaroid", :style=>"width:80px;height:80px;"%>
     <% end %>
     </td>
     <td><%= user.firstname %></td>

@@ -29,7 +29,7 @@ module SessionsHelper
   	private
 
     def user_from_remember_token
-    	User.authenticate_with_id(remember_token)
+    	self.current_user = User.authenticate_with_id(remember_token)
     end
 
     def remember_token

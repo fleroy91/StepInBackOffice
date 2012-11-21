@@ -1,13 +1,6 @@
-<script type="text/javascript">
-	$(function () {
-	    var chart;
-	    $(document).ready(function() {
-	    	chart = new Highcharts.Chart(gon.chart);
-	    	$('body').css('cursor', 'auto');
-	    });
-	});
-</script>
-<%= javascript_include_tag "highcharts" %>
-<%= javascript_include_tag "modules/exporting" %>
+<%= javascript_include_tag "user/stats" %>
 
-<div id="chart_container" class="span11" style="height: 400px"></div>
+<div style="height: 400px">
+	<div class="ajax-loader"></div>
+	<div id="chart_container"></div>
+</div>

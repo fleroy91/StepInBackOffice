@@ -1,2 +1,15 @@
 <ul class="nav nav-list">
+    <%= form_for(:home, :url => { :action => :compute }, :method => :get, :remote => true) do |f| %>
+        <li class="nav-header">Dates</li>
+        <%= f.select :predefined_dates, options_for_select([[ "Aujourd'hui", :this_day ], [ 'Cette semaine', :this_week ], [ 'Les 7 derniers jours', :last_7_days ], [ 'Ce mois', :this_month], ['Cette année', :this_year], [ 'Personalisée', :custom ],], @predefined), {:remote => true}, "data-remote" => true, :onchange => "manageChangeDate($(form));", :onclick => "manageChangeDate($(form))", :class => "span12" %>
+        <div id="custom-dates" style="display:none;">
+            <li class="nav-header">Dates</li>
+            <li>De</li>
+            <li><%= f.datepicker :from, :value => @from.to_s, :class => "span12", :defaultDate => "-1m", :numberOfMonths => 2, :showButtonPanel => true, :dateFormat => 'dd/mm/yy'  %>
+            </li>
+            <li>à</li>
+            <li><%= f.datepicker :to, :value => @to.to_s, :class => "span12", :numberOfMonths => 2, :showButtonPanel => true, :dateFormat => 'dd/mm/yy'  %></li>
+            <%= f.submit "Appliquer", :id => "apply-date", :class => "btn" %>
+        </div>
+    <% end %>
 </ul>

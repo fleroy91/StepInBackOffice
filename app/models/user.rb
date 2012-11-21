@@ -13,9 +13,14 @@ class User < MyActiveResource
   	end
 
 	def self.authenticate(email, submitted_password)
-	    user = find(:first, :params => {:email => email})
+	    user = my_find(:first, :params => {:email => email})
 	    return nil  if user.nil?
 	    return user if user.has_password?(submitted_password)
+  	end
+
+  	def is_admin?
+  		# TODO
+  		return (email == "test2@gmail.com")
   	end
 
   	def self.authenticate_with_id(id)
@@ -25,7 +30,7 @@ class User < MyActiveResource
 	def get_shops
 		# @shops = Shop.find(:all, :params => { "beancode!gt" => 0, "app_user.url" => m_url}) if @shops.nil?
 		# TODO : for debug we get all shops
-		@shops = Shop.find(:all, :params => { "beancode!gt" => 0}) if @shops.nil?
+		@shops = Shop.my_find(:all, :params => { "beancode!gt" => 0}) if @shops.nil?
 		return @shops
 	end
 

@@ -1,0 +1,47 @@
+console.log("Params " + '<%= raw @params.inspect %>');
+
+// Main figures
+var el = $('#main_figures table')
+// console.log("Table : " + el);
+el.remove('tr');
+var main_figures = $.parseJSON('<%= raw @main_figures.to_json %>')
+var i;
+var html = "";
+for(i = 0; i < main_figures.length; i++) {
+	console.log(i + '-' + main_figures[i])
+	html += '<tr><td>' + main_figures[i][0] + '</td>' + '<td>' + main_figures[i][1] + '</td></tr>';
+}
+// console.log("HTML : " + html);
+hideWaiting('#main_figures');
+el.html(html);
+
+// Ranking shops
+el = $('#ranking_shops table')
+// console.log("Table : " + el);
+el.remove('tr');
+var ranking_shops = $.parseJSON('<%= raw @ranking_shops.to_json %>')
+html = "<thead><tr><td><strong>Magasin</strong></td><td><strong>Visites</strong></td><td><strong>Articles scannés</strong></td><td><strong>Points</strong></td></tr></thead>";
+for(i = 0; i < ranking_shops.length; i++) {
+	html += '<tr>'
+	for(j = 0; j < ranking_shops[i].length; j ++) {
+		html += '<td>' + ranking_shops[i][j] + '</td>';
+	}
+	html += '</tr>'
+}
+hideWaiting('#ranking_shops');
+// console.log("HTML : " + html);
+el.html(html);
+
+// articles graph
+var nb_scans = $.parseJSON('<%= raw @nb_scans.to_json %>')
+hideWaiting('#visits');
+if(true) {
+	$("#visits h4").hide();
+	var c = $.parseJSON('<%= raw @chart.to_json %>')
+	console.log("Chart " + c);
+	var chart = new Highcharts.Chart(c);
+} else {
+	$('#chart_container').html("<p>Aucun scan d'articles pendant cette période</p>");
+}
+
+

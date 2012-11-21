@@ -1,28 +1,21 @@
-
-
 /* ==========================================================================
    Author's custom styles
    ========================================================================== */
-
-
-
-#jquery-loader.blue-with-image{
+.ajax-loader {
     border:none;
     padding-top:35px;
     background-color: transparent;
     text-align: center;
-    background-image: url(ajax-loader.gif);
+    height:100%;
+    vertical-align: center;
+    background-image: url("ajax-loader.gif");
     background-position: center center;
     background-repeat: no-repeat;
- 
 }
 
-
-
-
-
-
-
-
-
-
+.show-grid {
+	background-color: #EEE;
+	border:solid;
+	border-width:1px;
+	border-color:0
+}

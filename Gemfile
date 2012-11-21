@@ -38,6 +38,7 @@ gem 'modernizr-rails'
 gem 'gon'
 gem 'thin'
 gem 'redis'
+gem 'httparty'
 
 # Stylesheet libs
 # gem 'blueprint-rails'

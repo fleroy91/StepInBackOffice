@@ -18,6 +18,7 @@ class MyActiveResource < ActiveResource::Base
 
   	def as_json(options = nil)
     	ret = super(options)
+      # logger.debug "Options for to_json = #{self.class} #{options.inspect} #{ret.inspect}"
       if ! options || ! options[:no_entry] then
       	entry = {}
         if ret then
@@ -30,25 +31,32 @@ class MyActiveResource < ActiveResource::Base
       return ret
   	end
 
-    def find(*arguments)
+    def self.my_find(*arguments)
       # We try to look first in redis
-      res = $redis.get(arguments.to_s)
+      key = self.name + '_' + arguments.to_s
+      res = $redis.get(key)
+      # logger.debug "Calling Redis first on #{arguments.to_s} : #{res.inspect}"
       if res then
-        logger.debug "Using cache key : #{arguments.to_s} = #{res}"
+        logger.debug "Using cache key : #{arguments.to_s}"
         res = JSON.parse(res)
         if res.kind_of? Array then
           ret = []
           res.each { |elem|
-            ret.push(self.Class.new(elem))
+            elem.each { |k,v|
+              # logger.debug("Elem = #{k.capitalize.constantize.inspect}")
+              ret.push(k.capitalize.constantize.new(v))
+            }
           }
         else
-          ret = self.Class.new(res)
+          res.each { |k,v|
+            ret = k.capitalize.constantize.new(v)
+        }
         end
       else
-        ret = super.find(what, options)
-        val_to_store = ret.to_json({:no_entry => true})
-        $redis.setex(arguments.to_s, TTL_TIME, val_to_store)
-        logger.debug "Storing cache key : #{arguments.to_s} = #{val_to_store.to_s}"
+        ret = self.find(*arguments)
+        val_to_store = ret.to_json(:no_entry => true)
+        $redis.setex(key, TTL_TIME, val_to_store)
+        logger.debug "Storing cache key : #{key}"
       end
       return ret
     end
