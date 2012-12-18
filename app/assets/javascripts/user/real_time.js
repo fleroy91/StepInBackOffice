@@ -49,14 +49,14 @@ function update(no_fade) {
 							html += " de <strong>" + user.firstname + "</strong>";
 						}
 						html+= '</ul>'
-					} else if(rew.action_kind === 'scan') {
-						// console.log("Scan");
-						// console.log(rew.scan);
+					} else if(rew.action_kind === 'catalog') {
+						// console.log("Catalog");
+						// console.log(rew.catalog);
 						html += "<ul>"
-						if(rew.scan) {
-							html += "Scan de l'article <strong>" + rew.scan.entry.title + "</strong>"
+						if(rew.catalog) {
+							html += "Vue du catalogue <strong>" + rew.catalog.entry.name + "</strong>"
 						} else {
-							html += "Scan d'un article"
+							html += "Vue d'un catalogue"
 						}
 						html += "</ul>"
 					} else {

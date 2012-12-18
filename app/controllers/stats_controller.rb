@@ -131,16 +131,38 @@ private
 			@chart[:yAxis][:title][:text] = "Nb visites"
 			filter[:action_kind] = 'stepin'
 			incr = 1
-		when :scans
-			@chart[:title][:text] = "Scans"
-			filter[:action_kind] = 'scan'
-			@chart[:yAxis][:title][:text] = "Nb scans"
+		when :catalogs
+			@chart[:title][:text] = "Catalogues"
+			filter[:action_kind] = 'catalog'
+			@chart[:yAxis][:title][:text] = "Nb catalogues"
 			incr = 1
 		when :points
 			@chart[:title][:text] = "Points donnés"
 			@chart[:yAxis][:title][:text] = "Somme des points"
 			incr = :nb_points
 			# no filter
+		when :taux
+			@chart[:title][:text] = "Taux de fréquentation"
+			filter[:action_kind] = 'stepin'
+			@chart[:yAxis] = [
+				{
+					min: 0,
+					title: {
+						text: 'Nb'
+					}
+				},
+				{ # Secondary yAxis
+	                title: {
+	                    text: 'Taux',
+	                    style: {
+	                        color: '#4572A7'
+	                    }
+	                },
+	                min: 0,
+                	opposite: true
+            	}
+			]
+			incr = 1
 		end
 
 		logger.debug "Chart title : #{@chart[:title][:text]}"
@@ -174,13 +196,48 @@ private
 		# We get back the objects limited to the shops
 		objs = get_rewards(:stats, @from, @to, filter)
 
+		if @kind == :taux then
+			@nb_users = get_nb_users(objs)
+		end
+
 		generate_series(objs, @xAxis, incr)
 
 	end
 
+	def get_nb_users(objs)
+		users = []
+		objs.each { |rew|
+			if rew.user && ! users.index(rew.user.entry.url) then
+				users.push(rew.user.entry.url)
+			end
+		}
+		return users.size
+	end
+
 	def generate_series(objs, key, incr)
 		@chart[:series] = []
-		if @chart_type == :pie then
+		if @kind == :taux then
+			serie_visits = generate_serie(@chart[:xAxis][:categories], nil, objs, key, incr)
+			@chart[:series].push({:name => "Nb visites", :type => :column, :data => serie_visits })
+
+			serie_user = generate_serie(@chart[:xAxis][:categories], nil, objs, key, incr, :user)
+			@chart[:series].push({:name => "Nb users", :type => :column, :data => serie_user })
+
+			i = 0
+			serie_taux = []
+			while i < serie_user.size do 
+				nb_user = serie_user[i] * 1.0
+				if nb_user > 0 then
+					taux = (serie_visits[i] / nb_user).round(2)
+				else
+					taux = 0
+				end
+				serie_taux.push(taux)
+				i += 1
+			end
+			@chart[:series].push({:name => "Taux de fréquentation", :yAxis => 1,:type => :spline, :data => serie_taux })
+
+		elsif @chart_type == :pie then
 			# we need to create only 1 serie with all the shops
 			#@chart[:xAxis] = {}
 			#@chart[:yAxis] = {}
@@ -201,14 +258,16 @@ private
 		end
 	end
 
-	def generate_serie(categories, shop, objs, key, incr)
+	def generate_serie(categories, shop, objs, key, incr, user = nil)
 		serie = []
 		categories.each { |cat_val|
+			users = []
 			sum = 0
 			objs.each { |obj|
 				# logger.debug "obj.shop.url = #{obj.shop.inspect}"
-				if obj.shop.attributes[:url] == shop.m_url then #obj.shop.attributes['url'] == shop.m_url || obj.shop.attributes['m_url'] == shop.m_url then
+				if shop.nil? || obj.shop.attributes[:url] == shop.m_url then #obj.shop.attributes['url'] == shop.m_url || obj.shop.attributes['m_url'] == shop.m_url then
 					w = DateTime.parse(obj.when)
+					cval = cat_val
 					case key
 					when :hour
 						val = w.hour
@@ -216,12 +275,21 @@ private
 						val = w.day
 					when :week
 						val = w.cwday
+						cval = categories.index(cat_val) + 1 unless cval == :all
 					when :month
 						val = w.month
+						cval = categories.index(cat_val) + 1 unless cval == :all
 					end
 
-					if val == cat_val || cat_val == :all then
-						if incr.kind_of? Fixnum then
+					if val == cval || cval == :all then
+						if user then
+							if obj.user then
+								user_url = obj.user.entry.url
+								if ! users.index(user_url) then
+									users.push(user_url)
+								end
+							end
+						elsif incr.kind_of? Fixnum then
 							sum += incr
 						else
 							sum += obj.attributes[incr] || 0
@@ -229,9 +297,11 @@ private
 					end
 				end
 			}
+			if user then
+				sum=users.size
+			end
 			serie.push(sum)
 		}
-		logger.debug "Serie pour #{shop.name} : #{serie.inspect}"
 		return serie
 	end
 end

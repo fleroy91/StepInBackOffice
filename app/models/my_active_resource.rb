@@ -1,6 +1,11 @@
 class MyActiveResource < ActiveResource::Base
 	include ActiveResource::Extend::AuthWithApi
 
+    # Switch to false to use the real tables !
+    def self.USE_FAKE_TABLES 
+      return false
+    end
+
     TTL_TIME = 2*60
 
   	def self.getId(url)

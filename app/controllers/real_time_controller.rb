@@ -26,6 +26,11 @@ class RealTimeController < ApplicationController
 				shop = findShop(MyActiveResource.getId(url))
 				rew.shop = shop if shop
 
+        if rew.catalog then
+          logger.debug "Rew.catalog = #{rew.catalog.inspect}"
+          rew.catalog = findCatalog(rew.catalog)
+        end
+
 				if rew.code then
 					rew.scan = findScan(rew.code)
 				end
@@ -35,10 +40,10 @@ class RealTimeController < ApplicationController
 					else
 						id = MyActiveResource.getId(rew.user.url)
 					end
-					logger.debug "Rew.user = #{rew.user.inspect} #{id.inspect}"
+					# logger.debug "Rew.user = #{rew.user.inspect} #{id.inspect}"
 					user = findUser(id)
 					if user then
-						logger.debug "Found !"
+						# logger.debug "Found !"
 						rew.user = user
 					else
 						logger.debug "Not found !"

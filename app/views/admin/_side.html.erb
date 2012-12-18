@@ -8,5 +8,6 @@
     <li class="nav-header">Opérations BD</li>
     <li><%= button_to "Générer des utilisateurs", admin_populate_users_path, :confirm => "Etes-vous sur ? ", :method => :get, :class => "btn" %></li>
     <li><%= button_to "Générer des visites / scans", admin_populate_visits_scans_path, :confirm => "Etes-vous sur ? ", :method => :get, :class => "btn" %></li>
+    <li><%= button_to "Peupler depuis PopulateDb Dir", admin_populate_db_from_fs_path, :confirm => "Etes-vous sur ? ", :method => :get, :class => "btn" %></li>
     <li class="divider"></li>
 </ul>

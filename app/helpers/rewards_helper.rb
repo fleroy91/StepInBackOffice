@@ -11,6 +11,22 @@ module RewardsHelper
 		return nil
 	end
 
+	def findCatalog(url)
+		# logger.debug "*** Relecture de tous les scans"
+		@allCatalogs = Catalog.find(:all, :params => { :per_page => 1000}) if @allCatalogs.nil?
+		id = MyActiveResource.getId(url)
+
+		@allCatalogs.each { |cata|
+			# logger.debug "Catalog : #{cata.m_url.inspect}"
+			if MyActiveResource.getId(cata.m_url) == id then
+				# logger.debug "Catalog found : #{cata.inspect}"
+				return cata 
+			end
+		}
+		# logger.debug "No catalog found : #{url.inspect}"
+		return nil
+	end
+
 	def displayWhen(w)
 		t = Time.parse(w)
 		return t.strftime("%d/%m/%Y %H:%M")

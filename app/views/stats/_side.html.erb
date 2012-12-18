@@ -9,7 +9,7 @@
         <%= f.submit "Appliquer", :id => "apply-date", :class => "btn" %>
 
         <li class="nav-header">Données</li>
-        <%= f.select :kind, options_for_select([[ 'Nb visites', :visits ], [ 'Nb scans', :scans], ['Nb points', :points]], @kind), {:remote => true}, "data-remote" => true, :onchange => "showWaitingAndSubmit($(form));", :class => "span12" %>
+        <%= f.select :kind, options_for_select([[ 'Taux de fréquentation', :taux ], [ 'Nb visites', :visits ], [ 'Nb catalogues', :catalogs], ['Nb points', :points]], @kind), {:remote => true}, "data-remote" => true, :onchange => "showWaitingAndSubmit($(form));", :class => "span12" %>
         <li class="nav-header">Echelle</li>
         <%= f.select :xAxis, options_for_select([[ 'Vue par heure', :hour ], [ 'Vue par jour', :day], ['Vue par jour semaine', :week], ['Vue par mois', :month]], @xAxis), {}, :onchange => "showWaitingAndSubmit($(form));", :class => "span12" %>
         <li class="nav-header">Graphique</li>

@@ -20,7 +20,7 @@ el = $('#ranking_shops table')
 // console.log("Table : " + el);
 el.remove('tr');
 var ranking_shops = $.parseJSON('<%= raw @ranking_shops.to_json %>')
-html = "<thead><tr><td><strong>Magasin</strong></td><td><strong>Visites</strong></td><td><strong>Articles scannés</strong></td><td><strong>Points</strong></td></tr></thead>";
+html = "<thead><tr><td><strong>Magasin</strong></td><td><strong>Visites</strong></td><td><strong>Vues catalogues</strong></td><td><strong>Favoris</strong></td><td><strong>Points</strong></td></tr></thead>";
 for(i = 0; i < ranking_shops.length; i++) {
 	html += '<tr>'
 	for(j = 0; j < ranking_shops[i].length; j ++) {
@@ -41,7 +41,7 @@ if(true) {
 	console.log("Chart " + c);
 	var chart = new Highcharts.Chart(c);
 } else {
-	$('#chart_container').html("<p>Aucun scan d'articles pendant cette période</p>");
+	$('#chart_container').html("<p>Aucune vue de catalogues pendant cette période</p>");
 }
 
 

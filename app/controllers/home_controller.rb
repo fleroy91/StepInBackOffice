@@ -15,7 +15,7 @@ class HomeController < ApplicationController
     case @predefined
     when "last_7_days"
       logger.debug "last_7_days"
-      @from = DateTime.new(@to.year, @to.month, @to.day - 7)
+      @from = DateTime.new(@to.year, @to.month, @to.day).to_time.advance(:days => -7).to_date
       @chart_title = "Visites sur les 7 derniers jours"
       @step = :day
 
@@ -27,7 +27,7 @@ class HomeController < ApplicationController
       end
     when "this_week"
       logger.debug "This week"
-      @from = DateTime.new(@to.year, @to.month, @to.day - @to.cwday + 1)
+      @from = DateTime.new(@to.year, @to.month, @to.day).to_time.advance(:days => - @to.cwday + 1).to_date
       @chart_title = "Visites de cette semaine"
       @step = :day
 
@@ -59,9 +59,9 @@ class HomeController < ApplicationController
       @from = DateTime.new(@to.year, @to.month, 1)
       @chart_title = "Visites de ce mois"
       @step = :day
-
+      logger.debug("#{@from.to_s} - #{@to.to_s} - ")
       now = @from.to_date
-      end_of_month = DateTime.new(@to.year, @to.month + 1, 1).to_time.advance(:days => -1).to_date
+      end_of_month = DateTime.new(@to.year, @to.month, 1).to_time.advance(:months => 1, :days => -1).to_date
       while now <= end_of_month do
         @collection.push(now)
         @collection_text.push("#{now.mday}")
@@ -205,12 +205,18 @@ private
     @main_figures = []
     @main_figures.push(["Nb magasins", current_user.get_shops().size])
     @main_figures.push(["Nb visites", countObj(objs, "stepin")])
-    @main_figures.push(["Nb articles scannés", countObj(objs, "scan")])
+    @main_figures.push(["Nb catalogues vus", countObj(objs, "catalog")])
+    @main_figures.push(["Nb favoris", (countObj(objs, "catalog") * 1.37).round])
     @main_figures.push(["Points donnés", sumObj(objs)])
 
     @ranking_shops = []
     current_user.get_shops().each { |shop|
-      @ranking_shops.push([shop.name, countObj(objs, "stepin", shop), countObj(objs, "scan", shop), sumObj(objs, shop)])
+      @ranking_shops.push(
+        [shop.name, 
+          countObj(objs, "stepin", shop), 
+          countObj(objs, "catalog", shop),
+          (countObj(objs, "catalog", shop) * 1.37).round,
+          sumObj(objs, shop)])
     }
     # we sort by first column first
     @ranking_shops.sort!{ |e| -e[1]}

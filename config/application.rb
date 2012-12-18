@@ -74,11 +74,11 @@ module ActiveResource #:nodoc:
     module AuthWithApi
       module ClassMethods
         def element_path_with_auth(id, prefix_options = {}, query_options = {})
-          query_options.merge!({:auth_token => "mh1iJru6ydVsDxRCoWjV", :meta_prefix => 'm_'})
+          query_options.merge!({:auth_token => "seK41wiSZxB6Rr1iGLyg", :meta_prefix => 'm_'})
           element_path_without_auth(id, prefix_options, query_options)
         end
         def collection_path_with_auth(prefix_options = {}, query_options = {})
-          query_options.merge!({:auth_token => "mh1iJru6ydVsDxRCoWjV", :meta_prefix => 'm_'})
+          query_options.merge!({:auth_token => "seK41wiSZxB6Rr1iGLyg", :meta_prefix => 'm_'})
           collection_path_without_auth(prefix_options, query_options)
         end
       end

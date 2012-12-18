@@ -36,9 +36,9 @@ class ApplicationController < ActionController::Base
 	  userId = current_user.id
 	  s_from = from.to_s(:db)[0..9]
 	  s_to = to.to_s(:db)[0..9]
-	  key = userId.to_s + '_' + id.to_s + '_' + s_from + '_' + s_to
+	  key = userId.to_s + '_' + id.to_s + '_' + s_from + '_' + s_to + '_rewards'
 
-	  r_objs = $redis.get(key + '_objs')
+	  r_objs = $redis.get(key)
 
 	  #logger.debug("Before")
 	  #logger.debug("r_objs = #{r_objs.inspect}")
@@ -64,7 +64,7 @@ class ApplicationController < ActionController::Base
 	    }
 	    ret = objs
 
-	    $redis.set(key + '_objs', objs.to_json(:no_entry => true))
+	    $redis.set(key, objs.to_json(:no_entry => true))
 	
 		#logger.debug("After")
 		#logger.debug("r_objs = " + $redis.get(key+ '_objs').inspect)
