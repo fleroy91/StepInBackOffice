@@ -1,6 +1,7 @@
 function showWaiting() {
 	$('.ajax-loader').show();
 	$('#chart_container').hide();
+	$('#chart_container_2').hide();
 }
 function hideWaiting() {
 	$('.ajax-loader').hide();

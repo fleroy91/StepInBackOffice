@@ -3,6 +3,8 @@ StepInBackOffice::Application.routes.draw do
   get "admin/populate_users"
   get "admin/populate_visits_scans"
   get "admin/populate_db_from_fs"
+  get "admin/clean_rewards"
+  get "admin/flush_db"
 
   get "real_time/index"
   get "real_time/update"

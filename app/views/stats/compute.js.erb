@@ -3,3 +3,65 @@ console.log("Chart " + j);
 hideWaiting();
 var chart = new Highcharts.Chart(j);
 
+if($('#stats_kind').val() === 'taux') {
+	$('#chart_container_2').show();	
+// Radialize the colors
+/*
+Highcharts.getOptions().colors = $.map(Highcharts.getOptions().colors, function(color) {
+	return {
+		radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+		stops: [
+		[0, color],
+            [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+            ]
+        };
+    });
+*/
+// Build the chart
+chart2 = new Highcharts.Chart({
+	chart: {
+		renderTo: 'chart_container_2',
+		plotBackgroundColor: null,
+		plotBorderWidth: null,
+		plotShadow: false
+	},
+	title: {
+		text: 'Taux de fréquentation'
+	},
+	tooltip: {
+		pointFormat: '{series.name}: <b>{point.percentage}%</b>',
+		percentageDecimals: 1
+	},
+	plotOptions: {
+		pie: {
+			allowPointSelect: true,
+			cursor: 'pointer',
+			dataLabels: {
+				enabled: true,
+				color: '#000000',
+				connectorColor: '#000000',
+				formatter: function() {
+					return '<b>'+ this.point.name +'</b>';
+				}
+			}
+		}
+	},
+	series: [{
+		type: 'pie',
+		name: 'Taux de fréquentation',
+		data: [
+		['1 à 2 visites',  10.5],
+		{
+			name: '2 à 4 visites',
+			y: 30.8,
+			sliced: true,
+			selected: true
+		},
+		['4 à 6 visites',       23.8],
+		['Plus de 7 visites',   5]
+		]
+	}]
+});
+
+
+}

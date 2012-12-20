@@ -9,7 +9,7 @@ var i;
 var html = "";
 for(i = 0; i < main_figures.length; i++) {
 	console.log(i + '-' + main_figures[i])
-	html += '<tr><td>' + main_figures[i][0] + '</td>' + '<td>' + main_figures[i][1] + '</td></tr>';
+	html += '<tr><td>' + main_figures[i][0] + '</td>' + '<td>' + main_figures[i][1] * 9 + '</td></tr>';
 }
 // console.log("HTML : " + html);
 hideWaiting('#main_figures');

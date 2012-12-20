@@ -25,7 +25,7 @@ class User < MyActiveResource
 	def get_shops
 		# @shops = Shop.find(:all, :params => { "beancode!gt" => 0, "app_user.url" => m_url}) if @shops.nil?
 		# TODO : for debug we get all shops
-		@shops = Shop.my_find(:all, :params => { "beancode!gt" => 0}) if @shops.nil?
+		@shops = Shop.my_find(:all, :params => { "beancode!gt" => 0, "name!match" => "/carrefour market*/i"}) if @shops.nil?
 		return @shops
 	end
 

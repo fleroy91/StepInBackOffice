@@ -117,7 +117,7 @@ class HomeController < ApplicationController
     @chart = {
       chart: {
         renderTo: 'chart_container',
-        type: 'line'
+        type: 'spline'
       },
       title: {
         text: @chart_title

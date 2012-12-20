@@ -5,8 +5,8 @@ class StatsController < ApplicationController
 	def initialize_params
 		# We should receive the values of the forms in params
 		@titre = "Statistiques"
-		@xAxis = :hour
-		@kind = :visits
+		@xAxis = :day
+		@kind = :taux
 		@chart_type = :column
 		# We're looking for the date beginning of month
 		@to = DateTime.now()
@@ -235,7 +235,7 @@ private
 				serie_taux.push(taux)
 				i += 1
 			end
-			@chart[:series].push({:name => "Taux de fréquentation", :yAxis => 1,:type => :spline, :data => serie_taux })
+			# @chart[:series].push({:name => "Taux de fréquentation", :yAxis => 1,:type => :spline, :data => serie_taux })
 
 		elsif @chart_type == :pie then
 			# we need to create only 1 serie with all the shops

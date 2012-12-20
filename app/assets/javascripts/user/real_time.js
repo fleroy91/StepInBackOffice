@@ -50,10 +50,10 @@ function update(no_fade) {
 						}
 						html+= '</ul>'
 					} else if(rew.action_kind === 'catalog') {
-						// console.log("Catalog");
-						// console.log(rew.catalog);
+						console.log("Catalog");
+						console.log(rew);
 						html += "<ul>"
-						if(rew.catalog) {
+						if(rew.catalog && rew.catalog.entry) {
 							html += "Vue du catalogue <strong>" + rew.catalog.entry.name + "</strong>"
 						} else {
 							html += "Vue d'un catalogue"
@@ -71,7 +71,11 @@ function update(no_fade) {
 						if(! max_time || max_time.getTime() < dwhen.getTime()) {
 							max_time = dwhen;
 						}
-						html+= '<td>' + rew.shop.entry.name + '</td>';
+						if(rew.shop) {
+							html+= '<td>' + rew.shop.entry.name + '</td>';
+						} else {
+							html+= '<td></td>';
+						}
 						html+= '<td>' + formatDate(dwhen) + '</td>';
 						html+='</tr>';
 					} else {

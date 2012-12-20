@@ -17,8 +17,8 @@ class RealTimeController < ApplicationController
 
   	rewards = Reward.my_find(:all, :params => filter)
   	if rewards then
-
-  		rewards.collect! { |rew|
+      data = []
+  		rewards.each { |rew|
   			#logger.debug "rew = #{rew.inspect}"
   			if rew.shop then
 	  			url = rew.shop.url
@@ -29,6 +29,7 @@ class RealTimeController < ApplicationController
         if rew.catalog then
           logger.debug "Rew.catalog = #{rew.catalog.inspect}"
           rew.catalog = findCatalog(rew.catalog)
+          logger.debug "After Rew.catalog = #{rew.catalog.inspect}"
         end
 
 				if rew.code then
@@ -50,8 +51,9 @@ class RealTimeController < ApplicationController
 					end
 				end
 			end
-			rew
-  		}
+			data.push(rew)
+		}
+      rewards = data
   	end
   	logger.debug "#{rewards.size} rewards trouvés !"
   	if ! params[:from] then
