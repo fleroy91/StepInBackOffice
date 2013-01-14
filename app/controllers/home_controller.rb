@@ -188,6 +188,7 @@ class HomeController < ApplicationController
       $redis.set(cmd, resp)
       # But we need to store the cmd url in the invalidator key array
       $redis.sadd(key, cmd)
+      logger.debug "Storing in cache : key:#{key}\ncmd:#{cmd}"
   end
 
   def callSR(url, args, key)
@@ -215,20 +216,26 @@ class HomeController < ApplicationController
     end
   end
 
-  def invalid_cache
-    logger.debug "Invalid cache Params = #{params.inspect}"
+  def invalidate_cache
+    logger.debug "Invalidate cache Params = #{params.inspect}"
 
-    invalidator_key = params.entry.m_url
+    invalidator_key = params["m_entry"]["m_url"]
     arr = $redis.smembers(invalidator_key)
     arr.each { |cmd|
       # We first invalidate the cache
-      $redis.clear(cmd)
+      $redis.del(cmd)
     }
     # then we recall by sending new commands
-    arr.each { |cmd|
-      # TODO : do it in rails to recall ourself
-      HTTParty.get(home_compute_cache_path(cmd, invalidator_key))
+    logger.debug "Arr : #{arr.inspect}"
+    EventMachine.run {
+      arr.each { |cmd|
+        url = "http://#{request.host_with_port}#{home_compute_cache_path}"
+        body = {:cmd => cmd, :key => invalidator_key}
+        logger.debug "#{url} + #{body.inspect}"
+        EventMachine::HttpRequest.new(url).post :body => body
+      }
     }
+    render :json => { :ok => true}
   end
 
   def compute_cache
@@ -236,10 +243,13 @@ class HomeController < ApplicationController
     cmd = params[:cmd]
     key = params[:key]
 
-    cmd = CGI.unescape(cmd)
-    key = CGI.unescape(key)
+    # cmd = CGI.unescape(cmd)
+    # key = CGI.unescape(key)
     response = HTTParty.get(cmd)
+    logger.debug "Response : #{response.inspect}"
     store_in_cache(cmd, response.body, key)
+    logger.debug "After compute cache : #{cmd} #{key}"
+    render :json => { :ok => true}
   end
 
   def init_mobile
@@ -256,7 +266,7 @@ class HomeController < ApplicationController
       user = callSR("/collections/4ff6f9851b338a3e72000c64/entries", {:m_url => user_url}, user_url)
       user = user["array"]["resources"][0]
       rews = callSR("/collections/4ff6f04c1b338a3e720006cd/entries", { 'user.url' => user_url,
-                      'when!gte' => now.to_s, 
+                      'when!gte' => now.iso8601, 
                       :sort => 'when', 
                       :order => 'desc'}, user_url)
       #logger.debug "Rews = #{rews.inspect}"

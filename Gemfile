@@ -39,6 +39,7 @@ gem 'gon'
 gem 'thin'
 gem 'redis'
 gem 'httparty'
+gem 'em-http-request'
 
 # Stylesheet libs
 # gem 'blueprint-rails'
