@@ -183,6 +183,121 @@ class HomeController < ApplicationController
     end
   end
 
+  def store_in_cache(cmd, resp, key)
+      # We store the result in the complete key
+      $redis.set(cmd, resp)
+      # But we need to store the cmd url in the invalidator key array
+      $redis.sadd(key, cmd)
+  end
+
+  def callSR(url, args, key)
+    cmd = "https://api.storageroomapp.com/accounts/4ff6ebed1b338a6ace001893#{url}.json?meta_prefix=m_&auth_token=seK41wiSZxB6Rr1iGLyg"
+    if args then
+      args.each { |key,val|
+          val = CGI.escape(val) if val.is_a?(String)
+          cmd += "&#{key}=#{val}"
+      }
+    end
+
+    logger.debug("Call SR on #{cmd}")
+
+    # manage the cache
+    cachedResult = $redis.get(cmd)
+    if cachedResult then
+      logger.debug("=> Result is cached")
+      ret = JSON.parse(cachedResult)
+    else
+      logger.debug("=> Result is NOT cached")
+      response = HTTParty.get(cmd)
+      store_in_cache(cmd, response.body, key)
+
+      ret = JSON.parse(response.body)
+    end
+  end
+
+  def invalid_cache
+    logger.debug "Invalid cache Params = #{params.inspect}"
+
+    invalidator_key = params.entry.m_url
+    arr = $redis.smembers(invalidator_key)
+    arr.each { |cmd|
+      # We first invalidate the cache
+      $redis.clear(cmd)
+    }
+    # then we recall by sending new commands
+    arr.each { |cmd|
+      # TODO : do it in rails to recall ourself
+      HTTParty.get(home_compute_cache_path(cmd, invalidator_key))
+    }
+  end
+
+  def compute_cache
+    logger.debug "Compute cache Params = #{params.inspect}"
+    cmd = params[:cmd]
+    key = params[:key]
+
+    cmd = CGI.unescape(cmd)
+    key = CGI.unescape(key)
+    response = HTTParty.get(cmd)
+    store_in_cache(cmd, response.body, key)
+  end
+
+  def init_mobile
+    user = params[:user]
+    lat = params[:lat]
+    lng = params[:lng]
+
+    now = DateTime.now()
+    logger.debug "Start of init mobile at #{now.to_s}"
+    now = now.to_time.advance(:days => -7).to_date.to_time
+    user_url = CGI.unescape(user)
+
+    if user_url != "0" then
+      user = callSR("/collections/4ff6f9851b338a3e72000c64/entries", {:m_url => user_url}, user_url)
+      user = user["array"]["resources"][0]
+      rews = callSR("/collections/4ff6f04c1b338a3e720006cd/entries", { 'user.url' => user_url,
+                      'when!gte' => now.to_s, 
+                      :sort => 'when', 
+                      :order => 'desc'}, user_url)
+      #logger.debug "Rews = #{rews.inspect}"
+      rews = rews["array"]["resources"] if rews
+      user[:rewards] = rews
+      invits = callSR("/collections/508e92f80f66022f510015e5/entries", { 'inviter.url' => user_url,}, user_url)
+      #logger.debug "Invits = #{invits.inspect}"
+      invits = invits["array"]["resources"] if invits
+      user[:invitations] = invits
+    else
+      # Dummy user
+      user = { :rewards => [], :invitations => []}
+    end
+    # to cache the search, we trunc the lat long in order to grab shops in the same area
+    lat = lat[0..4]
+    lng = lng[0..5]
+    shops = callSR("/collections/4ff6ed1e1b338a5c1e000094/entries", 
+        { 'location!near' => "((#{lat},#{lng}),5000)", 'beancode!gt' => 0}, "shops_#{lat}_#{lng}")
+    #logger.debug "Shops : #{shops.inspect}"
+    shops = shops["array"]["resources"]
+    
+    shops.each { |shop|
+      catalogs = []
+      shop["catalogs"].each { |catalog|
+        cat_url = catalog["url"]
+        #logger.debug "Catalog = #{catalog.inspect}"
+        cat = callSR("/collections/50c209ae0f66022ef800062d/entries", {:m_url => cat_url }, cat_url)["array"]["resources"][0]
+        cat[:scans] = callSR("/collections/506eec600f660214ae00013a/entries", {'catalog.url' => cat_url }, cat_url)["array"]["resources"]
+        catalogs.push(cat)
+      }
+      shop["catalogs"] = catalogs
+    }
+    user["shops"] = shops
+
+    logger.debug "End of init mobile at #{DateTime.now().to_s}"
+    ret = {
+      :user => user
+    }
+    render json: ret
+  end
+
 private
 
   def get_data

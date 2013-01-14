@@ -15,6 +15,10 @@ StepInBackOffice::Application.routes.draw do
   get "home/compute"
   get "home/synthesis"
 
+  get "home/init_mobile"
+  get "home/compute_cache"
+  post "home/invalidate_cache"
+
   match '/admin',     :to => 'home#admin'
   match '/stats',     :to => 'home#stats'
   match '/real_time', :to => 'home#real_time'
