@@ -276,6 +276,10 @@ class HomeController < ApplicationController
       #logger.debug "Invits = #{invits.inspect}"
       invits = invits["array"]["resources"] if invits
       user[:invitations] = invits
+      bookmarks = callSR("/collections/50bf34860f6602134d0001df/entries", { 'user.url' => user_url,}, user_url)
+      #logger.debug "Invits = #{invits.inspect}"
+      bookmarks = bookmarks["array"]["resources"] if bookmarks
+      user[:bookmarks] = bookmarks
     else
       # Dummy user
       user = { :rewards => [], :invitations => []}
