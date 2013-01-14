@@ -10,7 +10,7 @@ class StatsController < ApplicationController
 		@chart_type = :column
 		# We're looking for the date beginning of month
 		@to = DateTime.now()
-		@from = DateTime.new(@to.year, @to.month - 1, 1)
+		@from = DateTime.new(@to.year, @to.month, 1).to_time.advance(:months => -1).to_date
 
 		if params[:stats] then
 			@xAxis = params[:stats][:xAxis].to_sym if params[:stats][:xAxis]
