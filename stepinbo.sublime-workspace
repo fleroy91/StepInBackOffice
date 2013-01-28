@@ -4,6 +4,10 @@
 		"selected_items":
 		[
 			[
+				"inval",
+				"invalidator_key"
+			],
+			[
 				"htt",
 				"HTTParty"
 			],
@@ -399,7 +403,41 @@
 			"file": "app/controllers/home_controller.rb",
 			"settings":
 			{
-				"buffer_size": 12564,
+				"buffer_size": 13352,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "Searching 373 files for \"flush\"\n\n/Users/viaduc143/Documents/Titanium_Studio_Workspace/StepInBackOffice/app/controllers/admin_controller.rb:\n   89  	end\n   90  \n   91: 	def flush_db\n   92: 		$redis.flushdb\n   93: 		flash[:notice] = \"Redis database flushed !\"\n   94  		redirect_to :action => :index\n   95  	end\n\n/Users/viaduc143/Documents/Titanium_Studio_Workspace/StepInBackOffice/app/controllers/home_controller.rb:\n  218  \n  219    def clear_all_cache\n  220:     $redis.flushdb\n  221    end\n  222  \n\n/Users/viaduc143/Documents/Titanium_Studio_Workspace/StepInBackOffice/app/views/admin/_side.html.erb:\n   11      <li><%= button_to \"PopulateDb depuis Dir\", admin_populate_db_from_fs_path, :confirm => \"Etes-vous sur ? \", :method => :get, :class => \"btn\" %></li>\n   12      <li><%= button_to \"Nettoyer les rewards\", admin_clean_rewards_path, :confirm => \"Etes-vous sur ? \", :method => :get, :class => \"btn\" %></li>\n   13:     <li><%= button_to \"Flush DB\", admin_flush_db_path, :method => :get, :class => \"btn\" %></li>\n   14      <li class=\"divider\"></li>\n   15  </ul>\n\n/Users/viaduc143/Documents/Titanium_Studio_Workspace/StepInBackOffice/config/routes.rb:\n    5    get \"admin/populate_db_from_fs\"\n    6    get \"admin/clean_rewards\"\n    7:   get \"admin/flush_db\"\n    8  \n    9    get \"real_time/index\"\n\n7 matches across 4 files\n\n\nSearching 449 files for \"random\"\n\n/Users/viaduc143/Documents/Titanium_Studio_Workspace/StepInBackOffice/app/controllers/admin_controller.rb:\n  134  \n  135  			#logger.debug \"From : #{from.inspect} - #{ratio_user} - #{visit_per_day}\"\n  136: 			users = selectRandom(fake_users, 1 + fake_users.size * ratio_user / 100)\n  137  			users.each { |user|\n  138: 				shops_visited = selectRandom(shops, visit_per_day)\n  139  				shops_visited.each { |shop|\n  140  					# We select an hour\n  141: 					dwhen = from.to_time.advance(:minutes => (9*60 + Random.rand(10*60)))\n  142  \n  143  					rew = Reward.new({:when => dwhen.to_s, :nb_points => shop.points.stepin, :action_kind => 'stepin'})\n  ...\n  153  					end\n  154  \n  155: 					catalogs = selectRandom(shop.catalogs, Random.rand(catalog_read_per_visit))\n  156  					catalogs.each { |catalog|\n  157: 						swhen = dwhen.to_time.advance(:minutes => Random.rand(60))\n  158  \n  159  						rew = Reward.new({:when => swhen.to_s, :nb_points => shop.points.catalog,\n  ...\n  242  \n  243  	def get_points_hash\n  244: 		return { \"stepin\" => 50 + Random.rand(5) * 25,\n  245  			\"catalog\" => 25}\n  246  	end\n  ...\n  434  	end\n  435  \n  436: 	def selectRandom(arr, nb)\n  437  		l = arr.size\n  438  \n  ...\n  442  \n  443  		while nb > 0 do\n  444: 			elem = arr[Random.rand(l)]\n  445  			if ! ret.index(elem) then\n  446  				ret.push(elem)\n\n/Users/viaduc143/Documents/Titanium_Studio_Workspace/StepInBackOffice/config/initializers/secret_token.rb:\n    3  # Your secret key for verifying the integrity of signed cookies.\n    4  # If you change this key, all old signed cookies will become invalid!\n    5: # Make sure the secret is at least 30 characters and all random,\n    6  # no regular words or you'll be exposed to dictionary attacks.\n    7  StepInBackOffice::Application.config.secret_token = '59c26a43fd9899e799691a16eee18144f830aa401263e891f7caeab19a240abe98c433029e8a7fe9570bb26e5f9084916251e4295e3e00699c3e55c30da07f70'\n\n/Users/viaduc143/Documents/Titanium_Studio_Workspace/StepInBackOffice/spec/spec_helper.rb:\n   43      config.infer_base_class_for_anonymous_controllers = false\n   44  \n   45:     # Run specs in random order to surface order dependencies. If you find an\n   46      # order dependency and want to debug it, you can fix the order by providing\n   47      # the seed, which is printed after each run.\n   48      #     --seed 1234\n   49:     config.order = \"random\"\n   50    end\n   51  end\n\n/Users/viaduc143/Documents/Titanium_Studio_Workspace/StepInBackOffice/stepinbo.sublime-workspace:\n  106  			[\n  107  				\"sele\",\n  108: 				\"selectRandom\"\n  109  			],\n  110  			[\n\n/Users/viaduc143/Documents/Titanium_Studio_Workspace/StepInBackOffice/vendor/assets/stylesheets/bootstrap.css:\n 2609  }\n 2610  \n 2611: .icon-random {\n 2612    width: 16px;\n 2613    background-position: -216px -120px;\n\n14 matches across 5 files\n",
+			"settings":
+			{
+				"buffer_size": 4198,
+				"line_ending": "Unix",
+				"name": "Find Results",
+				"scratch": true
+			}
+		},
+		{
+			"file": "config/routes.rb",
+			"settings":
+			{
+				"buffer_size": 2591,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "Gemfile",
+			"settings":
+			{
+				"buffer_size": 1238,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "app/controllers/stats_controller.rb",
+			"settings":
+			{
+				"buffer_size": 7723,
 				"line_ending": "Unix"
 			}
 		}
@@ -614,6 +652,13 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"random",
+			"rewards",
+			"flush",
+			"httpart",
+			"htt",
+			"params",
+			"@",
 			"is_a?",
 			"instance",
 			"when!gte",
@@ -734,14 +779,7 @@
 			"puts",
 			"log",
 			"from",
-			"m_url",
-			"kind",
-			"help_path",
-			"current shop",
-			"datet",
-			"create_url",
-			"m",
-			"per_page"
+			"m_url"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -749,6 +787,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"m_",
 			"./assets",
 			"iPhoneOS6.0.sdk",
 			"params[:home]",
@@ -818,7 +857,7 @@
 	"groups":
 	[
 		{
-			"selected": 7,
+			"selected": 8,
 			"sheets":
 			[
 				{
@@ -833,8 +872,8 @@
 						"selection":
 						[
 							[
-								1138,
-								1361
+								2248,
+								2248
 							]
 						],
 						"settings":
@@ -843,7 +882,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 869.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -913,8 +952,8 @@
 						"selection":
 						[
 							[
-								964,
-								964
+								158,
+								158
 							]
 						],
 						"settings":
@@ -923,7 +962,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 327.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -940,8 +979,8 @@
 						"selection":
 						[
 							[
-								216,
-								216
+								195,
+								195
 							]
 						],
 						"settings":
@@ -951,7 +990,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 171.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -968,8 +1007,8 @@
 						"selection":
 						[
 							[
-								2978,
-								2978
+								1920,
+								1920
 							]
 						],
 						"settings":
@@ -979,7 +1018,7 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 605.0,
+						"translation.y": 361.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1017,15 +1056,15 @@
 					"file": "app/controllers/home_controller.rb",
 					"settings":
 					{
-						"buffer_size": 12564,
+						"buffer_size": 13352,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								7197,
-								7197
+								7388,
+								7388
 							]
 						],
 						"settings":
@@ -1035,7 +1074,213 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 2891.0,
+						"translation.y": 3364.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"settings":
+					{
+						"buffer_size": 4198,
+						"regions":
+						{
+							"match":
+							{
+								"flags": 112,
+								"regions":
+								[
+									[
+										172,
+										177
+									],
+									[
+										197,
+										202
+									],
+									[
+										247,
+										252
+									],
+									[
+										471,
+										476
+									],
+									[
+										944,
+										949
+									],
+									[
+										961,
+										966
+									],
+									[
+										1252,
+										1257
+									],
+									[
+										1586,
+										1592
+									],
+									[
+										1708,
+										1714
+									],
+									[
+										1869,
+										1875
+									],
+									[
+										2069,
+										2075
+									],
+									[
+										2091,
+										2097
+									],
+									[
+										2221,
+										2227
+									],
+									[
+										2410,
+										2416
+									],
+									[
+										2514,
+										2520
+									],
+									[
+										2620,
+										2626
+									],
+									[
+										3019,
+										3025
+									],
+									[
+										3482,
+										3488
+									],
+									[
+										3740,
+										3746
+									],
+									[
+										3920,
+										3926
+									],
+									[
+										4095,
+										4101
+									]
+								],
+								"scope": ""
+							}
+						},
+						"selection":
+						[
+							[
+								1897,
+								1897
+							]
+						],
+						"settings":
+						{
+							"detect_indentation": false,
+							"output_tag": 2,
+							"result_base_dir": "",
+							"result_file_regex": "^([A-Za-z\\\\/<].*):$",
+							"result_line_regex": "^ +([0-9]+):",
+							"scroll_past_end": true,
+							"syntax": "Packages/Default/Find Results.hidden-tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 540.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "config/routes.rb",
+					"settings":
+					{
+						"buffer_size": 2591,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								239,
+								239
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Ruby/Ruby.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "Gemfile",
+					"settings":
+					{
+						"buffer_size": 1238,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								491,
+								491
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Ruby/Ruby.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "app/controllers/stats_controller.rb",
+					"settings":
+					{
+						"buffer_size": 7723,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								614,
+								614
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/Ruby/Ruby.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"type": "text"
@@ -1085,20 +1330,36 @@
 		"selected_items":
 		[
 			[
-				"",
-				"app/controllers/home_controller.rb"
+				"gem",
+				"Gemfile"
+			],
+			[
+				"route",
+				"config/routes.rb"
+			],
+			[
+				"stat",
+				"app/controllers/stats_controller.rb"
 			],
 			[
 				"home",
 				"app/controllers/home_controller.rb"
 			],
 			[
-				"devel",
-				"log/development.log"
+				"",
+				"app/controllers/home_controller.rb"
 			],
 			[
-				"route",
+				"gemf",
+				"Gemfile"
+			],
+			[
+				"routes",
 				"config/routes.rb"
+			],
+			[
+				"devel",
+				"log/development.log"
 			],
 			[
 				"home_",
@@ -1125,14 +1386,6 @@
 				"app/helpers/rewards_helper.rb"
 			],
 			[
-				"routes",
-				"config/routes.rb"
-			],
-			[
-				"gem",
-				"Gemfile"
-			],
-			[
 				"sc",
 				"app/controllers/stats_controller.rb"
 			],
@@ -1147,10 +1400,6 @@
 			[
 				"co",
 				"app/views/stats/compute.js.erb"
-			],
-			[
-				"stat",
-				"app/controllers/stats_controller.rb"
 			],
 			[
 				"adm",
@@ -1315,10 +1564,6 @@
 			[
 				"index",
 				"app/views/stats/index.html.erb"
-			],
-			[
-				"gemf",
-				"Gemfile"
 			],
 			[
 				"a.js",
