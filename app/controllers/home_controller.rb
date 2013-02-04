@@ -219,7 +219,12 @@ class HomeController < ApplicationController
   def invalidate_cache
     puts "Invalidate cache Params = #{params.inspect}"
 
-    invalidator_key = params["m_entry"]["m_url"]
+    invalidator_key = params["webhook_call"]["m_entry"]["m_url"]
+    invalidator_type = params["webhook_call"]["m_entry"]["m_type"]
+    if invalidator_type == "Bookmark" || invalidator_type == "AppInvitation" || invalidator_type == "Reward" then
+      invalidator_key = params["webhook_call"]["m_entry"]["user"]["url"]
+    end
+
     arr = $redis.smembers(invalidator_key)
     arr.each { |cmd|
       # We first invalidate the cache
