@@ -234,6 +234,8 @@ class HomeController < ApplicationController
       puts "We get the cache key from the ENTRY : #{invalidator_key}"
     end
 
+    invalidator_key = no_http(invalidator_key)
+
     arr = $redis.smembers(invalidator_key)
     arr.each { |cmd|
       # We first invalidate the cache
