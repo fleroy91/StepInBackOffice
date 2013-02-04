@@ -207,8 +207,14 @@ private
 	def get_nb_users(objs)
 		users = []
 		objs.each { |rew|
-			if rew.user && ! users.index(rew.user.entry.url) then
-				users.push(rew.user.entry.url)
+			if rew.user then
+				if rew.user.entry then
+					if ! users.index(rew.user.entry.url) then
+						users.push(rew.user.entry.url)
+					end
+				else
+					logger.info "Rew.user = #{rew.user.inspect}"
+				end
 			end
 		}
 		return users.size
@@ -225,7 +231,7 @@ private
 
 			i = 0
 			serie_taux = []
-			while i < serie_user.size do 
+			while i < serie_user.size do
 				nb_user = serie_user[i] * 1.0
 				if nb_user > 0 then
 					taux = (serie_visits[i] / nb_user).round(2)
