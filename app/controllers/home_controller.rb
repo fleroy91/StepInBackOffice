@@ -7,14 +7,14 @@ class HomeController < ApplicationController
     if params[:home] then
       @predefined = params[:home][:predefined_dates] if params[:home][:predefined_dates]
     end
-    logger.info @predefined.inspect
+    puts @predefined.inspect
 
     @to = DateTime.now()
     @collection = []
     @collection_text = []
     case @predefined
     when "last_7_days"
-      logger.info "last_7_days"
+      puts "last_7_days"
       @from = DateTime.new(@to.year, @to.month, @to.day).to_time.advance(:days => -7).to_date
       @chart_title = "Visites sur les 7 derniers jours"
       @step = :day
@@ -26,7 +26,7 @@ class HomeController < ApplicationController
         now = now.to_time.advance(:days => 1).to_date
       end
     when "this_week"
-      logger.info "This week"
+      puts "This week"
       @from = DateTime.new(@to.year, @to.month, @to.day).to_time.advance(:days => - @to.cwday + 1).to_date
       @chart_title = "Visites de cette semaine"
       @step = :day
@@ -40,7 +40,7 @@ class HomeController < ApplicationController
         now = now.to_time.advance(:days => 1).to_date
       end
     when "this_day"
-      logger.info "This day"
+      puts "This day"
       @from = DateTime.new(@to.year, @to.month, @to.day)
       @chart_title = "Visites de ce jour"
       @step = :hour
@@ -52,14 +52,14 @@ class HomeController < ApplicationController
         @collection_text.push("#{now.hour}")
         now = now.to_time.advance(:hours => 1).to_time
       end
-      logger.info @collection.inspect
-      logger.info @collection_text.inspect
+      puts @collection.inspect
+      puts @collection_text.inspect
     when "this_month"
-      logger.info "This month"
+      puts "This month"
       @from = DateTime.new(@to.year, @to.month, 1)
       @chart_title = "Visites de ce mois"
       @step = :day
-      logger.info("#{@from.to_s} - #{@to.to_s} - ")
+      puts("#{@from.to_s} - #{@to.to_s} - ")
       now = @from.to_date
       end_of_month = DateTime.new(@to.year, @to.month, 1).to_time.advance(:months => 1, :days => -1).to_date
       while now <= end_of_month do
@@ -68,7 +68,7 @@ class HomeController < ApplicationController
         now = now.to_time.advance(:days => 1).to_date
       end
     when "this_year"
-      logger.info "This year"
+      puts "This year"
       @from = DateTime.new(@to.year, 1, 1)
       @chart_title = "Visites sur cette année"
       @step = :month
@@ -81,7 +81,7 @@ class HomeController < ApplicationController
         now = now.to_time.advance(:months => 1).to_date
       end
     when "custom"
-      logger.info "Custom"
+      puts "Custom"
       if params[:home] then
         @from = DateTime.parse(params[:home][:from], 'dd/mm/yy') if params[:home][:from]
         @to = DateTime.parse(params[:home][:to], 'dd/mm/yy') if params[:home][:to]
@@ -110,9 +110,9 @@ class HomeController < ApplicationController
 
   def compute
     initialize_params
-    logger.info "Params = #{params.inspect}"
-    logger.info "From = #{@from.inspect}"
-    logger.info "To = #{@to.inspect}"
+    puts "Params = #{params.inspect}"
+    puts "From = #{@from.inspect}"
+    puts "To = #{@to.inspect}"
 
     @chart = {
       chart: {
@@ -188,7 +188,7 @@ class HomeController < ApplicationController
       $redis.set(cmd, resp)
       # But we need to store the cmd url in the invalidator key array
       $redis.sadd(key, cmd)
-      logger.info "Storing in cache : key:#{key}\ncmd:#{cmd}"
+      puts "Storing in cache : key:#{key}\ncmd:#{cmd}"
   end
 
   def callSR(url, args, key)
@@ -200,15 +200,15 @@ class HomeController < ApplicationController
       }
     end
 
-    logger.info("Call SR on #{cmd}")
+    puts("Call SR on #{cmd}")
 
     # manage the cache
     cachedResult = $redis.get(cmd)
     if cachedResult then
-      logger.info("=> Result is cached")
+      puts("=> Result is cached")
       ret = JSON.parse(cachedResult)
     else
-      logger.info("=> Result is NOT cached")
+      puts("=> Result is NOT cached")
       response = HTTParty.get(cmd)
       store_in_cache(cmd, response.body, key)
 
@@ -217,7 +217,7 @@ class HomeController < ApplicationController
   end
 
   def invalidate_cache
-    logger.info "Invalidate cache Params = #{params.inspect}"
+    puts "Invalidate cache Params = #{params.inspect}"
 
     invalidator_key = params["m_entry"]["m_url"]
     arr = $redis.smembers(invalidator_key)
@@ -226,12 +226,12 @@ class HomeController < ApplicationController
       $redis.del(cmd)
     }
     # then we recall by sending new commands
-    logger.info "Arr : #{arr.inspect}"
+    puts "Arr : #{arr.inspect}"
     EventMachine.run {
       arr.each { |cmd|
         url = "http://#{request.host_with_port}#{home_compute_cache_path}"
         body = {:cmd => cmd, :key => invalidator_key}
-        logger.info "#{url} + #{body.inspect}"
+        puts "#{url} + #{body.inspect}"
         EventMachine::HttpRequest.new(url).post :body => body
       }
     }
@@ -239,16 +239,16 @@ class HomeController < ApplicationController
   end
 
   def compute_cache
-    logger.info "Compute cache Params = #{params.inspect}"
+    puts "Compute cache Params = #{params.inspect}"
     cmd = params[:cmd]
     key = params[:key]
 
     # cmd = CGI.unescape(cmd)
     # key = CGI.unescape(key)
     response = HTTParty.get(cmd)
-    logger.info "Response : #{response.inspect}"
+    puts "Response : #{response.inspect}"
     store_in_cache(cmd, response.body, key)
-    logger.info "After compute cache : #{cmd} #{key}"
+    puts "After compute cache : #{cmd} #{key}"
     render :json => { :ok => true}
   end
 
@@ -258,7 +258,7 @@ class HomeController < ApplicationController
     lng = params[:lng]
 
     now = DateTime.now()
-    logger.info "Start of init mobile at #{now.to_s}"
+    puts "Start of init mobile at #{now.to_s}"
     now = now.to_time.advance(:days => -7).to_date.to_time
     user_url = CGI.unescape(user)
 
@@ -269,15 +269,15 @@ class HomeController < ApplicationController
                       'when!gte' => now.iso8601,
                       :sort => 'when',
                       :order => 'desc'}, user_url)
-      #logger.info "Rews = #{rews.inspect}"
+      #puts "Rews = #{rews.inspect}"
       rews = rews["array"]["resources"] if rews
       user[:rewards] = rews
       invits = callSR("/collections/508e92f80f66022f510015e5/entries", { 'inviter.url' => user_url,}, user_url)
-      #logger.info "Invits = #{invits.inspect}"
+      #puts "Invits = #{invits.inspect}"
       invits = invits["array"]["resources"] if invits
       user[:invitations] = invits
       bookmarks = callSR("/collections/50bf34860f6602134d0001df/entries", { 'user.url' => user_url,}, user_url)
-      #logger.info "Invits = #{invits.inspect}"
+      #puts "Invits = #{invits.inspect}"
       bookmarks = bookmarks["array"]["resources"] if bookmarks
       user[:bookmarks] = bookmarks
     else
@@ -289,14 +289,14 @@ class HomeController < ApplicationController
     lng = lng[0..5]
     shops = callSR("/collections/4ff6ed1e1b338a5c1e000094/entries",
         { 'location!near' => "((#{lat},#{lng}),5000)", 'beancode!gt' => 0}, "shops_#{lat}_#{lng}")
-    #logger.info "Shops : #{shops.inspect}"
+    #puts "Shops : #{shops.inspect}"
     shops = shops["array"]["resources"]
 
     shops.each { |shop|
       catalogs = []
       shop["catalogs"].each { |catalog|
         cat_url = catalog["url"]
-        #logger.info "Catalog = #{catalog.inspect}"
+        #puts "Catalog = #{catalog.inspect}"
         cat = callSR("/collections/50c209ae0f66022ef800062d/entries", {:m_url => cat_url }, cat_url)["array"]["resources"][0]
         cat[:scans] = callSR("/collections/506eec600f660214ae00013a/entries", {'catalog.url' => cat_url }, cat_url)["array"]["resources"]
         catalogs.push(cat)
@@ -311,7 +311,7 @@ class HomeController < ApplicationController
     }
     user["shops"] = shops
 
-    logger.info "End of init mobile at #{DateTime.now().to_s}"
+    puts "End of init mobile at #{DateTime.now().to_s}"
     ret = {
       :user => user
     }
@@ -331,7 +331,7 @@ private
     # We get back the objects limited to the shops
     objs = get_rewards(:home, @from, @to, filter)
 
-    logger.info "Nb rewards = #{objs.size}"
+    puts "Nb rewards = #{objs.size}"
 
     # Main figures:
     # - Nb magasins
@@ -358,7 +358,7 @@ private
 
     generate_chart_line(objs)
 
-    logger.info "Chart = #{@chart.inspect}"
+    puts "Chart = #{@chart.inspect}"
 
   end
   def countObj(objs, ak, shop = nil)
@@ -421,18 +421,18 @@ private
     objs.each { |reward|
       if reward.action_kind == "scan" then
         scan = findScan(reward.code)
-        logger.info "Scan = #{scan.inspect} for code = #{reward.code}"
+        puts "Scan = #{scan.inspect} for code = #{reward.code}"
         if ! scans.include?(scan) then
           scans.push(scan)
         end
       end
     }
-    logger.info "Scans = #{scans.inspect}"
+    puts "Scans = #{scans.inspect}"
     @nb_scans = scans.size
 
     scans.each { |scan|
       serie = generate_serie([:all], objs, scan)
-      logger.info "Serie = #{serie.inspect}"
+      puts "Serie = #{serie.inspect}"
       data.push [scan.title, serie[0]]
     }
     # we need to sort the data
