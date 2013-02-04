@@ -205,7 +205,7 @@ class HomeController < ApplicationController
     # manage the cache
     cachedResult = $redis.get(cmd)
     if cachedResult then
-      puts("=> Result is cached")
+      puts("=> Result is cached : #{cmd}")
       ret = JSON.parse(cachedResult)
     else
       puts("=> Result is NOT cached")
@@ -217,12 +217,15 @@ class HomeController < ApplicationController
   end
 
   def invalidate_cache
-    puts "Invalidate cache Params = #{params.inspect}"
+    # puts "Invalidate cache Params = #{params.inspect}"
 
     invalidator_key = params["webhook_call"]["m_entry"]["m_url"]
     invalidator_type = params["webhook_call"]["m_entry"]["m_type"]
     if invalidator_type == "Bookmark" || invalidator_type == "AppInvitation" || invalidator_type == "Reward" then
       invalidator_key = params["webhook_call"]["m_entry"]["user"]["url"]
+      puts "We get the cache key from the USER : #{invalidator_key}"
+    else
+      puts "We get the cache key from the ENTRY : #{invalidator_key}"
     end
 
     arr = $redis.smembers(invalidator_key)
@@ -251,9 +254,9 @@ class HomeController < ApplicationController
     # cmd = CGI.unescape(cmd)
     # key = CGI.unescape(key)
     response = HTTParty.get(cmd)
-    puts "Response : #{response.inspect}"
+    # puts "Response : #{response.inspect}"
     store_in_cache(cmd, response.body, key)
-    puts "After compute cache : #{cmd} #{key}"
+    # puts "After compute cache : #{cmd} #{key}"
     render :json => { :ok => true}
   end
 
