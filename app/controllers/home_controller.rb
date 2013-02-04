@@ -191,6 +191,10 @@ class HomeController < ApplicationController
       puts "Storing in cache : key:#{key}\ncmd:#{cmd}"
   end
 
+  def no_http(str)
+    return str.gsub("http://api.storageroomapp.com", "").gsub("https://api.storageroomapp.com","")
+  end
+
   def callSR(url, args, key)
     cmd = "https://api.storageroomapp.com/accounts/4ff6ebed1b338a6ace001893#{url}.json?meta_prefix=m_&auth_token=seK41wiSZxB6Rr1iGLyg"
     if args then
@@ -201,6 +205,8 @@ class HomeController < ApplicationController
     end
 
     puts("Call SR on #{cmd}")
+    cmd = no_http(cmd)
+    key = no_http(key)
 
     # manage the cache
     cachedResult = $redis.get(cmd)
@@ -209,7 +215,7 @@ class HomeController < ApplicationController
       ret = JSON.parse(cachedResult)
     else
       puts("=> Result is NOT cached")
-      response = HTTParty.get(cmd)
+      response = HTTParty.get("https://api.storageroomapp.com" + cmd)
       store_in_cache(cmd, response.body, key)
 
       ret = JSON.parse(response.body)
@@ -253,7 +259,7 @@ class HomeController < ApplicationController
 
     # cmd = CGI.unescape(cmd)
     # key = CGI.unescape(key)
-    response = HTTParty.get(cmd)
+    response = HTTParty.get("https://api.storageroomapp.com" + cmd)
     # puts "Response : #{response.inspect}"
     store_in_cache(cmd, response.body, key)
     # puts "After compute cache : #{cmd} #{key}"
