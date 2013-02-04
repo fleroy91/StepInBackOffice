@@ -208,12 +208,16 @@ private
 		users = []
 		objs.each { |rew|
 			if rew.user then
-				if rew.user.entry then
-					if ! users.index(rew.user.entry.url) then
-						users.push(rew.user.entry.url)
+				# logger.info "Rew.user = #{rew.user.inspect}"
+				if rew.user.has_attribute?("entry") then
+					entry = rew.user.entry
+					if entry.has_attribute?("url") then
+						if ! users.index(entry.url) then
+							users.push(entry.url)
+						end
 					end
 				else
-					logger.info "Rew.user = #{rew.user.inspect}"
+					# logger.info "Rew.user = #{rew.user.inspect}"
 				end
 			end
 		}
