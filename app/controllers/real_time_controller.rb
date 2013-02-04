@@ -5,7 +5,7 @@ class RealTimeController < ApplicationController
   end
 
   def update
-  	filter = {:sort => 'when', :order => 'desc', :per_page => 1000}
+  	filter = {:sort => 'when', :order => 'desc', :per_page => 50}
   	if params[:from] then
   		# logger.debug "From = #{params[:from].inspect}"
   		from = DateTime.parse(params[:from])
@@ -20,11 +20,12 @@ class RealTimeController < ApplicationController
       data = []
   		rewards.each { |rew|
   			#logger.debug "rew = #{rew.inspect}"
-  			if rew.shop then
+  			if rew.shop && rew.shop.attributes[:url] then
 	  			url = rew.shop.url
 	  			# logger.debug "url = #{rew.shop.url}"
-				shop = findShop(MyActiveResource.getId(url))
-				rew.shop = shop if shop
+				  shop = findShop(MyActiveResource.getId(url))
+				  rew.shop = shop if shop
+        end
 
         if rew.catalog then
           logger.debug "Rew.catalog = #{rew.catalog.inspect}"
@@ -35,13 +36,22 @@ class RealTimeController < ApplicationController
 				if rew.code then
 					rew.scan = findScan(rew.code)
 				end
+
 				if rew.user then
+          # logger.debug "Rew.user = #{rew.user.inspect}"
 					if rew.user.attributes[:entry] then
-						id = MyActiveResource.getId(rew.user.entry.url)
+            entry = rew.user.entry
+            # logger.debug "Entry = #{entry.inspect}"
+            if entry.attributes[:url] then
+						  id = MyActiveResource.getId(entry.url)
+            end
 					else
-						id = MyActiveResource.getId(rew.user.url)
+            if rew.user.attributes[:url] then
+						  id = MyActiveResource.getId(rew.user.url)
+            end
 					end
-					# logger.debug "Rew.user = #{rew.user.inspect} #{id.inspect}"
+          # logger.debug "ID = Rew.user = #{id.inspect}"
+
 					user = findUser(id)
 					if user then
 						# logger.debug "Found !"
@@ -50,9 +60,8 @@ class RealTimeController < ApplicationController
 						logger.debug "Not found !"
 					end
 				end
-			end
-			data.push(rew)
-		}
+  			data.push(rew)
+  		}
       rewards = data
   	end
   	logger.debug "#{rewards.size} rewards trouvés !"

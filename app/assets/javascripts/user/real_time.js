@@ -7,7 +7,7 @@ function twoDigits(x) { 'use strict';
 }
 
 function formatDate(date) { 'use strict';
-    var str = twoDigits(date.getDate()) + "/" + twoDigits(date.getMonth() + 1) + "/" + date.getFullYear() + 
+    var str = twoDigits(date.getDate()) + "/" + twoDigits(date.getMonth() + 1) + "/" + date.getFullYear() +
         " à " + twoDigits(date.getHours()) + ":" + twoDigits(date.getMinutes());
     return str;
 }
@@ -71,7 +71,7 @@ function update(no_fade) {
 						if(! max_time || max_time.getTime() < dwhen.getTime()) {
 							max_time = dwhen;
 						}
-						if(rew.shop) {
+						if(rew.shop && rew.shop.entry) {
 							html+= '<td>' + rew.shop.entry.name + '</td>';
 						} else {
 							html+= '<td></td>';
@@ -97,7 +97,7 @@ function update(no_fade) {
 				for(i = 0; i < array.length; i ++) {
 					var html = getHtml(array, i);
 					if(html) {
-						$(html).appendTo(el);		
+						$(html).appendTo(el);
 					}
 				}
 				$(".ajax-loader").hide();
@@ -108,7 +108,7 @@ function update(no_fade) {
 			}
 			if(max_time) {
 				$("#now").html(max_time.toISOString());
-			} 
+			}
 		}
 	});
 }

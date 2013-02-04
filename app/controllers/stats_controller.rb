@@ -209,9 +209,9 @@ private
 		objs.each { |rew|
 			if rew.user then
 				# logger.info "Rew.user = #{rew.user.inspect}"
-				if rew.user.has_attribute?("entry") then
+				if rew.user.attributes[:entry] then
 					entry = rew.user.entry
-					if entry.has_attribute?("url") then
+					if entry.attributes[:url] then
 						if ! users.index(entry.url) then
 							users.push(entry.url)
 						end
